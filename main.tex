@@ -4,11 +4,35 @@
 \usepackage{geometry}           % page size
 \usepackage[utf8]{inputenc}     % encoding
 \usepackage{palatino}           % font
-\usepackage[romanian]{babel}    % language
+% \usepackage[romanian]{babel}    % language
+\usepackage[english]{babel}
 \usepackage{graphicx}           % images
 \usepackage{indentfirst}        % indentation
 \usepackage[nottoc]{tocbibind}  % table of contents style
 \usepackage[unicode]{hyperref}  % references from the table of contents
+\usepackage{amsmath}
+\usepackage[
+    n,
+    operators,
+    advantage,
+    sets,
+    adversary,
+    landau,
+    probability,
+    notions,    
+    logic,
+    ff,
+    mm,
+    primitives,
+    events,
+    complexity,
+    asymptotics,
+    keys]{cryptocode}
+\usepackage{float}
+\usepackage{xcolor}
+\usepackage{changepage}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 
 % includes options
 \geometry{  a4paper,            % scientific thesis standard
@@ -22,7 +46,7 @@
 
 % other options
 \linespread{1.5}                % space between lines
-\renewcommand*\contentsname{Cuprins}    % table of contents name
+\renewcommand*\contentsname{Contents}    % table of contents name
 
 % the document content
 \begin{document}
