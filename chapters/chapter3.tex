@@ -1,31 +1,524 @@
-\chapter{Third chapter title}
+\chapter{The use of temporary variables}
 
-Amet venenatis urna cursus eget. Quam vulputate dignissim suspendisse in est ante. Proin nibh nisl condimentum id. Egestas maecenas 
-pharetra convallis posuere morbi. Risus viverra adipiscing at in. Vulputate eu scelerisque felis imperdiet. Cras adipiscing enim eu 
-turpis egestas pretium aenean pharetra. In aliquam sem fringilla ut morbi tincidunt augue. Montes nascetur ridiculus mus mauris. Viverra 
-accumsan in nisl nisi scelerisque eu ultrices vitae. In nibh mauris cursus mattis molestie a iaculis. Interdum consectetur libero id 
-faucibus nisl tincidunt eget. Gravida in fermentum et sollicitudin ac orci. Suscipit adipiscing bibendum est ultricies. Etiam non quam 
-lacus suspendisse. Leo urna molestie at elementum eu facilisis sed odio morbi. Egestas congue quisque egestas diam in arcu cursus. Amet 
-consectetur adipiscing elit ut aliquam purus.
+\section{Defining temporary variables}
 
-\section{First section title}
+\noindent{
+   
+    A tag's memory can be classified in two ways: \textbf{permanent}/internal or \textbf{temporary}/volatile. The permanent memory contains the state values of the tag, while the temporary memory is
+    composed by temporary/volatile variables used in calculations. Temporary variables can be further split into local temporary variables: used for a single step of the protocol
+    and global temporary variables: used to store values for a future step of the protocol.
 
-Eros donec ac odio tempor. Facilisi morbi tempus iaculis urna id volutpat. Faucibus in ornare quam viverra orci sagittis eu. Amet 
-tellus cras adipiscing enim eu turpis egestas. Integer feugiat scelerisque varius morbi. Platea dictumst vestibulum rhoncus est 
-pellentesque elit ullamcorper dignissim. Bibendum arcu vitae elementum curabitur. Eu nisl nunc mi ipsum faucibus. Id aliquet lectus 
-proin nibh nisl condimentum id venenatis a. Cras adipiscing enim eu turpis egestas pretium. Quisque non tellus orci ac auctor augue 
-mauris augue. Malesuada pellentesque elit eget gravida cum. Ut lectus arcu bibendum at. Massa id neque aliquam vestibulum morbi 
-blandit. Posuere ac ut consequat semper viverra nam. Viverra adipiscing at in tellus integer feugiat scelerisque varius morbi. 
-Morbi enim nunc faucibus a pellentesque sit amet porttitor eget. Eu feugiat pretium nibh ipsum consequat nisl vel. Nisl purus in 
-mollis nunc sed.
+    As the definitions imply, the global temporary variables have a longer life-time than local temporary variables. They are used to
+    store information that is later 
+    verified against received values to aid in the process of authentication. The use of them needs to be done with great care as corruption of 
+    tags can occur and by that an adversary can access information that would thwart privacy.
+}
 
-\section{Second section title}
+\section{Temporary State Disclosure and its effects on Privacy}
+\noindent{
+\vspace{0.2cm}
 
-Elementum sagittis vitae et leo duis ut diam quam nulla. Purus sit amet volutpat consequat mauris nunc. Tincidunt augue interdum 
-velit euismod in pellentesque massa. Nunc sed augue lacus viverra vitae congue. Porttitor leo a diam sollicitudin. Faucibus pulvinar
- elementum integer enim. Adipiscing bibendum est ultricies integer quis auctor elit. Blandit aliquam etiam erat velit scelerisque in. 
- A iaculis at erat pellentesque adipiscing commodo elit at. Erat nam at lectus urna duis. Consequat ac felis donec et. Fermentum posuere 
- urna nec tincidunt praesent semper feugiat nibh sed. Proin gravida hendrerit lectus a. Pretium viverra suspendisse potenti nullam ac 
- tortor vitae purus. Arcu cursus euismod quis viverra nibh cras pulvinar mattis. Gravida arcu ac tortor dignissim convallis aenean. 
- Quam nulla porttitor massa id neque aliquam vestibulum morbi. Sed viverra ipsum nunc aliquet. Quis enim lobortis scelerisque fermentum 
- dui faucibus in.
+    \textbf{Types of corruption:}
+    Under tag corruption the temporary tag state is disclosed depending on the concrete scenario. In general it is
+    under one of the following cases:
+
+    1. corruption discloses \textit{the full state}: the permanent and the temporary memory (this is refered as "Temporary State Disclosure")
+
+    2. corruption discloses \textit{just the permanent state}, leaving the values in the temporary memory still a secret.
+
+    \vspace{0.2cm}
+
+    The vulnerability through corruption has been highlighted for the first time in \cite{Impossibility_results}. Later \cite{Tiplea} 
+    extends the definition to cover PUF-based RFID protocols as well. 
+
+    The subsequent section outlines the results of \cite{Impossibility_results} and analyzes their relevance to Vaudenay's model.
+
+    \textbf{Theorem 1}: \textit{There is no RFID system in Vaudenay's model that achieves both reader authentication and narrow-forward privacy 
+    under temporary state disclosure.}
+
+    This result is based on the following lemma:
+
+    \textbf{Lemma 1}: If every narrow-forward adversary $\mathcal{A}_{prv}$ has a blinder $\mathcal{B}$ such that $Adv_{\mathcal{A}_{prv}}^{prv}$ is negligible
+    then $\mathcal{B}$ can be used for a blinded adversary $\mathcal{A}_{sec}^{\mathcal{B}}$ such that $Pr[Exp_{\mathcal{A}_{sec}^{B}}^{\mathcal{R}-aut} = 1]$ is
+    non-negligible.
+
+    \vspace{0.2cm}
+
+    Proof for Theorem 1: The definition of privacy requires the existence of a blinder such that there is no difference between an adversary that uses the 
+    protocol messages and a blinded adversary $\mathcal{A}^{\mathcal{B}}$. This is equivalent to an adversary that cannot distinguish between $\mathcal{B}$
+    and the real oracles. Lemma 1 states that there is such a blinder that can impersonate the reader with non-negligible probability.
+    Thus, $\mathcal{B}$ contradicts reader authentication(Definition 1).
+
+    \vspace{0.2cm}
+
+    The result of Theorem 1 and the proof for Lemma 1 are deducted in the following:
+
+    Step 1. There is assumed that there is a scheme that achieves both reader authentication and narrow-forward privacy. This will lead to a contradiction.
+    
+    Step 2. Narrow-forward privacy means $\mathcal{A}_{prv}$ and blinded $\mathcal{A}_{prv}^{\mathcal{B}}$ adversaries with no discernible
+    advantage between them. $\mathcal{A}_{prv}^{\mathcal{B}}$ simulates the Launch, SendReader and SendTag oracles.
+    The blinded adversary is used for an attacker for reader authentication, $\mathcal{A}_{sec}^{\mathcal{B}}$.
+    
+    Step 3. The construction of $\mathcal{A}_{sec}^{\mathcal{B}}$ is shown in Algorithm 1 and the win condition for $\mathcal{A}_{sec}^{\mathcal{B}}$
+    is established(Eq. 1). 
+
+    The construction for a blinded adversary against reader authentication is:
+    \begin{algorithm}[H] % -> H ca sa stea aici in document
+        \centering
+        \caption{Adversary $\mathcal{A}_{sec}^{\mathcal{B}}$ against reader authentication}
+        \begin{algorithmic}[1] % 1 -> line numbers
+            \State CreateTag(ID)
+            \State $vtag \leftarrow$ DrawTag(ID)
+            \State $\pi \leftarrow$ Launch() \Comment{simulated by $\mathcal{B}$}
+            \State $m_1 \leftarrow SendReader(-,\pi)$ \Comment{simulated by $\mathcal{B}$}
+            \State i $\leftarrow$ 1
+            \While{$i < stepsOfProtocol$}                
+                \State $m_{2i} \gets SendTag(m_{2i-1}, vtag)$ \Comment{simulated by $\mathcal{B}$}
+                \State $m_{2i+1} \gets SendReader(m_{2i}, \pi)$ \Comment{simulated by $\mathcal{B}$}
+                \State $i \gets i+1$
+            \EndWhile
+            \State $out_{\mathcal{T}_{ID}} \gets SendTag(m_{final}, vtag)$ \Comment{computed by $\mathcal{T}_{ID}$}
+        \end{algorithmic}
+    \end{algorithm}
+
+    $\mathcal{A}_{sec}^{\mathcal{B}}$ uses the blinder as a black box to simulate the messages between the reader and the tag.
+    $\mathcal{A}_{sec}$ succeds if $\mathcal{T}_{ID}$ accepts $\mathcal{B}$ as reader $\mathcal{R}$. Formally:
+
+    $Pr[Exp_{\mathcal{A}_{sec}^{B}}^{\mathcal{R}-aut} = 1] = Pr[Ident[\mathcal{T}_{ID}:S_0^{\mathcal{T}_{ID}}; \mathcal{A}_{sec}^{\mathcal{B}}:-; *:pk_{R}]
+    \rightarrow [\mathcal{T}_{ID}:real; \mathcal{A}_{sec}^{\mathcal{B}}:.]]$ (Equation 1) where $S_0^{\mathcal{T}_{ID}}$ denotes the initial tag state.
+    
+    Step 4. A proof that $\mathcal{A}_{sec}^{\mathcal{B}}$ has non-negligible odds to win the security game i.e. Eq. 1 is non-negligible.
+    This is a proof by contradiction as well. Equation 1 being negligible means a non-negligible $p_{\bot}$ that $out_{\mathcal{T}_{ID}} = \bot$.
+    The consequence is that $\mathcal{A}_{prv}$ has a non-negligible advantage in distinguishing the real oracles from the simulated ones, contradicting privacy.
+
+    The construction of $\mathcal{A}_{prv}$ is shown in Algorithm 2.
+
+    \begin{algorithm}[H] % -> H ca sa stea aici in document
+        \centering
+        \caption{$\mathcal{A}_{prv}$ against narrow-forward privacy}
+        \begin{algorithmic}[1] % 1 -> line numbers
+            \State CreateTag(ID)
+            \State $vtag \leftarrow$ DrawTag(ID)
+            \State $\pi \leftarrow$ Launch() 
+            \State $m_1 \leftarrow SendReader(-,\pi)$ 
+            \State i $\leftarrow$ 1
+            \While{$i < stepsOfProtocol$}                
+                \State $m_{2i} \gets SendTag(m_{2i-1}, vtag)$ 
+                \State $m_{2i+1} \gets SendReader(m_{2i}, \pi)$
+                \State $i \gets i+1$
+            \EndWhile
+            \State $S^{\mathcal{T}_{ID}} \gets$ \text{Corrupt}(vtag)
+            \State $out_{\mathcal{T}_{ID}} \gets \mathcal{T}_{ID}(S^{\mathcal{T}_{ID}}, m_{final})$
+            \If{$out_{\mathcal{T}_{ID}} = \text{real}$}
+                \State \Return 0
+            \Else
+                \State \Return 1
+            \EndIf
+        \end{algorithmic}
+    \end{algorithm}
+
+    The adversary for privacy $\mathcal{A}_{prv}$ corrupts $\mathcal{T}_{ID}$ just before it receives the last message, $m_{final}$. Next, $\mathcal{A}_{prv}$
+    performs the computation $\mathcal{T}_{ID}$ would have done for $m_{final}$. A result of $out_{\mathcal{T}_{ID}} = real$ denotes that the protocol interacted
+    with the real oracles(and the algorithm returns 0), otherwise the calls were make through $\mathcal{B}$(and the algorithm returns 1).
+
+    $\mathcal{A}_{prv}$ is a narrow-forward adversary because during the experiment there were no Result($\pi$) calls and once a Corrupt(vtag) was called 
+    no other oracle was queried.
+
+    What remains is to assess the odds of $\mathcal{A}_{prv}$ discerning between real/simulated oracles.
+
+    Firstly, for the case in which the adversary interacts with the real system/oracles, it follows from correctness that probability $p_{real}$ of 
+    $out_{\mathcal{T}_{ID}}$ is overwhelming, meaning $Pr[Exp_{\mathcal{A}_{prv}}^{prv-0} = 1] = 1-p_{real}$ is negligible. Secondly we consider the case
+    with the blinder. From the assumption $\mathcal{B}$ generates the last message such that $out_{\mathcal{T}_{ID}} = \bot$ with non-negligible probability $p_{\bot}$.
+    Thus $Pr[Exp_{\mathcal{A}_{prv}}^{prv-1} = 1] = p_{\bot}$ is non-negligible. It follows that $Adv_{\mathcal{A}_{prv}}^{prv} = |1-p_{real}-p_{\bot}|$ is non-negligible,
+    thus a contradiction. 
+
+    The contradiction means that the assuption was incorrect and $\mathcal{A}_{sec}^{\mathcal{B}}$ has non-negligible odds to win the security game.
+
+    Step 5. This adversary yields $Pr[Exp_{\mathcal{A}_{sec}^{B}}^{\mathcal{R}-aut} = 1]$ non-negligible meaning that reader authentication is disproved. 
+    This means that the assumption at step 1 is false which means Theorem 1 is correct. 
+
+}
+
+\section{Corruption without temporary state disclosure}
+\hspace*{0.4cm}
+    Another result from \cite{Impossibility_results} is presented in this chapter. 
+    The result obtained above shows there are more assumptions to evaluate than
+    previously considered in the context of tag corruption. A natural direction
+    to follow up on is what level of privacy can be achieved if temporary state
+    disclosure is not a factor. Thus, we study the case in which corruption discloses 
+    \textit{just the permanent state}, leaving global and local temporary variables
+    secret.
+
+    The previous result is built upon the fact that $\mathcal{A}_{prv}$ can learn the
+    temporary state of a tag during the Ident Protocol. This permits $\mathcal{A}_{prv}$
+    to verify the last message of the protocol with the tag and due to reader authentication
+    can distinguish between real oracles and a blinded environment. However if the corruption
+    yields only the persistent state, the previous result might not hold.
+    
+    \textbf{Theorem 2}: \textit{There is no RFID system in Vaudenay's model that achieves both reader authentication and narrow-strong privacy 
+    under permanent state disclosure.}
+
+    The result of Theorem 2 is deducted in the following:
+
+    Step 1. There is assumed that there is a scheme that achieves both reader authentication and narrow-strong privacy.
+    This will lead to a contradiction.
+
+    Step 2. Narrow-strong privacy means $\mathcal{A}_{prv}$ and blinded $\mathcal{A}_{prv}^{\mathcal{B}}$ adversaries with no discernible
+    advantage between them. $\mathcal{A}_{prv}^{\mathcal{B}}$ simulates the Launch, SendReader and SendTag oracles.
+    The blinded adversary is used for an attacker for reader authentication, $\mathcal{A}_{sec}^{\mathcal{B}}$.
+    
+    Step 3. The construction of $\mathcal{A}_{sec}^{\mathcal{B}}$ is shown in Algorithm 3 and the win condition for $\mathcal{A}_{sec}^{\mathcal{B}}$
+    is established(Eq. 1).
+
+    The construction for a blinded adversary against reader authentication is:
+    \begin{algorithm}[H] % -> H ca sa stea aici in document
+        \centering
+        \caption{Adversary $\mathcal{A}_{sec}^{\mathcal{B}}$ against reader authentication}
+        \begin{algorithmic}[1] % 1 -> line numbers
+            \State CreateTag(ID)
+            \State $vtag \leftarrow$ DrawTag(ID)
+            \State $S_0^{\mathcal{T}_{ID}} \gets Corrupt(vtag)$
+            \State $\pi \leftarrow$ Launch() \Comment{simulated by $\mathcal{B}$}
+            \State $m_1 \leftarrow SendReader(-,\pi)$ \Comment{simulated by $\mathcal{B}$}
+            \State i $\leftarrow$ 1
+            \While{$i < stepsOfProtocol$}                
+                \State $m_{2i} \gets SendTag(m_{2i-1}, vtag)$ \Comment{simulated by $\mathcal{B}$}
+                \State $m_{2i+1} \gets SendReader(m_{2i}, \pi)$ \Comment{simulated by $\mathcal{B}$}
+                \State $i \gets i+1$
+            \EndWhile
+            \State $out_{\mathcal{T}_{ID}} \gets SendTag(m_{final}, vtag)$ \Comment{computed by $\mathcal{T}_{ID}$}
+        \end{algorithmic}
+    \end{algorithm}
+
+    $\mathcal{A}_{sec}$ succeds if $\mathcal{T}_{ID}$ accepts $m_{final}$ and returns $out_{\mathcal{T}_{ID}} = real$.
+    It means that $\mathcal{T}_{ID}$ accepts $\mathcal{B}$ as reader $\mathcal{R}$. Formally:
+
+    $Pr[Exp_{\mathcal{A}_{sec}^{B}}^{\mathcal{R}-aut} = 1] = Pr[Ident[\mathcal{T}_{ID}:S_0^{\mathcal{T}_{ID}}; \mathcal{A}_{sec}^{\mathcal{B}}:-; *:pk_{R}]
+    \rightarrow [\mathcal{T}_{ID}:real; \mathcal{A}_{sec}^{\mathcal{B}}:.]]$ (Equation 2) where $S_0^{\mathcal{T}_{ID}}$ denotes the initial tag state.
+    
+    Step 4. A proof that $\mathcal{A}_{sec}^{\mathcal{B}}$ has non-negligible odds to win the security game i.e. Eq. 2 is non-negligible.
+    This is a proof by contradiction as well. Equation 2 being negligible means a non-negligible probability that $out_{\mathcal{T}_{ID}} = \bot$.
+    Let $p_t$ be that probability. The consequence is that $\mathcal{A}_{prv}$ has a non-negligible advantage in distinguishing the real oracles 
+    from the simulated ones, contradicting privacy.
+
+    The construction of $\mathcal{A}_{prv}$ is shown in Algorithm 4.
+    
+    \begin{algorithm}[H] % -> H ca sa stea aici in document
+        \centering
+        \caption{$\mathcal{A}_{prv}$ against narrow-strong privacy}
+        \begin{algorithmic}[1] % 1 -> line numbers
+            \State CreateTag(ID)
+            \State $vtag \leftarrow$ DrawTag(ID)
+            \State $S_0^{\mathcal{T}_{ID}} \gets Corrupt(vtag)$
+            \State $\pi \leftarrow$ Launch() 
+            \State $m_1 \leftarrow SendReader(-,\pi)$ 
+            \State $t \in \{1, ..., q_t\}$
+            \State i $\leftarrow$ 1
+            \While{$i < t$}                
+                \State $(S_{i+1}^{\mathcal{T}_{ID}}, m_{2i}) \gets 
+                    \mathcal{T}_{ID}(S_{i}^{\mathcal{T}_{ID}}, m_{2i-1})$ 
+                \State $m_{2i+1} \gets SendReader(m_{2i}, \pi)$
+                \State $i \gets i+1$
+            \EndWhile
+            \State $out_{\mathcal{T}_{ID}} \gets \mathcal{T}_{ID}(S_t^{\mathcal{T}_{ID}}, m_{final})$
+            \If{$out_{\mathcal{T}_{ID}} = \text{real}$}
+                \State \Return 0
+            \Else
+                \State \Return 1
+            \EndIf
+        \end{algorithmic}
+    \end{algorithm}
+
+    Notation: 
+
+    $S_0^{\mathcal{T}_{ID}}$ denotes the initial(0) state S of tag $\mathcal{T}_{ID}$
+
+    $q_t$ denotes the (expected) number of SendTag queries specified bt the Ident protocol
+
+    $\mathcal{T}_{ID}(state, message)$ denotes the computation done by $\mathcal{T}_{ID}$ 
+    when given message on specified state. 
+    
+    \vspace{0.2cm}
+    $\mathcal{A}_{prv}$ is a narrow-strong adversary because during the experiment there were no Result($\pi$) calls and after Corrupt(vtag) was called 
+    the adversary continued to use the tag.
+
+    In this context the Corrupt(vtag) call(line 3) yields only the persistent state $S_0^{\mathcal{T}_{ID}}$ of 
+    $\mathcal{T}_{ID}$. $\mathcal{A}_{prv}$ guesses t(step 6) and simulates the tag in the Ident protocol until 
+    the reader returns $m_{final}$. $\mathcal{A}_{prv}$ performs the computation for $\mathcal{T}_{ID}$ with the last
+    message m and return 0 for the case it interacted with the real oracles or 1 otherwise.
+
+    Next we study what $Adv_{\mathcal{A}_{prv}}^{prv}$ $\mathcal{A}_{prv}$ has when $p_t$ is assumed non-negligible.
+    For the case of the real oracles, it follows from correctness that $out_{\mathcal{T}_{ID}} = real$ with overwhelming
+    probability $p_{real}$. This means that $Pr[Exp_{\mathcal{A}_{prv}}^{prv-0} = 1] = 1-p_{real}$ is negligible. Secondly we consider the case
+    with the blinder. From the assumption $\mathcal{B}$ generates the last message such that $out_{\mathcal{T}_{ID}} = \bot$ with 
+    non-negligible probability $p_t$. Furthermore $\mathcal{A}_{prv}$ guesses number of tag messages t with 
+    probability $1/q_t$. Thus $Pr[Exp_{\mathcal{A}_{prv}}^{prv-1} = 1] \ge p_t/q_t$. The advantage becomes
+    $Adv_{\mathcal{A}_{prv}}^{prv} \ge |1-p_{real}-p_t/q_t|$. Due to correctness $p_{real}$ is overwhelming, the 
+    assumption gives $p_t$ non-negligible and $q_t$ is polynomially bounded. It results in a non-negligible 
+    advantage which contradicts narrow-strong privacy.
+
+    The contradiction means that the assuption was incorrect and $\mathcal{A}_{sec}^{\mathcal{B}}$ has non-negligible odds to win the security game.
+
+    Step 5. This adversary yields $Pr[Exp_{\mathcal{A}_{sec}^{B}}^{\mathcal{R}-aut} = 1]$ non-negligible meaning that reader authentication is disproved. 
+    This means that the assumption at step 1 is false which means Theorem 2 is correct. 
+
+\section{The impossibility results for resettable tags}
+\hspace{0.4cm}    
+    It is known that standard security notions do no longer work when the adversary can reset the internal state of the tags. Reset attacks have
+    been motivated in particular by the use of smart cards since in specific cases they go to their initial state when disconnected from power. Subsequently
+    they compute with the same randomness they already used bofore. Reset attacks are always possible when the adversary controls the environment.
+
+    To cover the case of reset attacks, a new oracle is introduced: Reset(vtag) to Vaudenay's model. This oracle allows the adversary to reset the state of the vtag
+    to its original values and its randomness as well. It is assumed that it can be computed in polynomial time. As for the Corrupt(vtag) oracle the Reset(vtag) is also not carried out
+    by the blinder $\mathcal{B}$ by merely observed by it.
+
+    \textbf{Theorem 3}: \textit{For an adversary that is allowed to call the Reset oracle no privacy can be achieved in Vaudenay's model.}
+
+    To demonstrate the theorem an experiment is constructed to show that a narrow-weak adversary $\mathcal{A}_{prv}$ can distinguish with a non-negligible advantage 
+    between an interaction with the real oracles and one done through a blinder $\mathcal{B}$. This is shown in algorithm 5.
+
+    $\mathcal{A}_{prv}$ eavesdropes a complete execution of the protocol between $vtag_{0}$ and $\mathcal{R}$(lines 6-10). Let $\tau_{0}$ be the transcript of the protocol, including the messages
+    sent both by the reader and the tag.
+
+    To simulate $\mathcal{R}$ adversary $\mathcal{A}_{prv}$ uses the messages of $\tau_{0}$ to simulate a new interaction with $vtag_{1}$, obtaining $\tau_{1}$. If the same tag was
+    drawn both times then $\mathcal{A}_{prv}$ expects the transcripts  to match. A blinder would not know the result of DrawTag()(line 13) and would have the guess which tag was
+    selected.
+
+    \vspace{0.2cm}
+
+    Next, the $Adv_{\mathcal{A}_{prv}}^{prv}$ is studied. For the case in which the attack uses the real oracles the reset of the tag alwats yields the same transcript a second time. 
+    The messages of the reader are the same by design of the attack and those of the tag also match because of the reset. Thus $\mathcal{A}_{prv}$ succeds with probability $1-\epsilon(l)$
+    where $\epsilon$ is a negligible function and $l$ is the security parameter. Formally:
+
+    $Pr[Exp_{\mathcal{A}_{prv}}^{prv-0} = 1] = Pr[(\Gamma[vtag_{0}] = \Gamma[vtag_{1}]) \land out] + Pr[(\Gamma[vtag_{0}] \neq \Gamma[vtag_{1}]) \land \lnot out] = 
+        \frac{1}{2}*1+\frac{1}{2}*(1-\epsilon(l)) = 1-epsilon(l)/2$.
+    
+    For the case of the blinder, $\mathcal{B}$ can only guess the tag selected by the second DrawTag call. Thus:
+
+    $Pr[Exp_{\mathcal{A}_{prv}}^{prv-1} = 1] = Pr[(\Gamma[vtag_{0}] = \Gamma[vtag_{1}]) \land out] + Pr[(\Gamma[vtag_{0}] \neq \Gamma[vtag_{1}]) \land \lnot out] = 
+        \frac{1}{2}*\frac{1}{2}+\frac{1}{2}*frac{1}{2} = frac{1}{2}$.
+
+    The difference between the two cases leads to a non-neglijible probability and therefore the privacy definition is contradicted, proving theorem 3.
+
+    \begin{algorithm}[H] % -> H ca sa stea aici in document
+        \centering
+        \caption{$\mathcal{A}_{prv}$ against narrow-weak privacy}
+        \begin{algorithmic}[1] % 1 -> line numbers
+            \State CreateTag($ID_0$)
+            \State CreateTag($ID_1$)
+            \State $vtag_{0} \leftarrow$ DrawTag($ID_k, Pr(k)= 1/2, k \in \{0,1\}$) 
+            \State $m_1 \leftarrow SendReader(-,\pi)$ 
+            \State i $\leftarrow$ 1
+            \While{$i < stepsOfProtocol$}                
+                \State $m_{2i} \gets SendTag(m_{2i-1}, vtag_{0})$
+                \State $m_{2i+1} \gets SendReader(m_{2i}, \pi)$
+                \State $i \gets i+1$
+            \EndWhile
+            \State $Reset(vtag_{0})$
+            \State $Free(vtag_{0})$
+            \State $vtag_{1} \leftarrow$ DrawTag($ID_k, Pr(k)= 1/2, k \in \{0,1\}$) 
+            \State i $\leftarrow$ 1
+            \While{$i < stepsOfTag$}
+                \State $m_{2i} \gets SendTag(m_{2i-1}, vtag_{1})$
+                \State $i \gets i+1$
+            \EndWhile       
+            \If{$ \tau_{0} = \tau_{1} $}
+                \State $out \leftarrow 1$
+            \Else
+                \State $out \leftarrow 0$
+            \EndIf
+            \State $return (\Gamma[vtag_{0}] = \Gamma[vtag_{1}] \land out) \lor 
+                (\Gamma[vtag_{0}] \neq \Gamma[vtag_{1}] \land \lnot out)$
+        \end{algorithmic}
+    \end{algorithm}
+
+
+
+    \section{The impossibility results for stateless tags}
+    \hspace{0.4cm}
+    This section covers the results for stateless tags, meaning tags that cannot update their persistent state. This will lead to the conclusion that destructive privacy
+    is not possible in Vaudenay's model using such tags.
+
+    In a stateless RFID scheme the Free(vtag) oracle erases any temporary information stored on the tag. Thus the scheme will make use of tags that have the same
+    persistent state throughout the protocol and the temporary memory is used only when comunicating with a reader, when the tag is powered by it.
+
+    Algorithm 6 presents how an adversary would interact with a scheme using stateless tags.
+
+    \begin{algorithm}[H] % -> H ca sa stea aici in document
+        \centering
+        \caption{$\mathcal{A}_{prv}$ against narrow-forward privacy with stateless tags}
+        \begin{algorithmic}[1] % 1 -> line numbers
+            \State CreateTag(ID)
+            \State $vtag \leftarrow$ DrawTag(ID)
+            \State Free(vtag)
+            \State $vtag \leftarrow$ DrawTag(ID)
+            \State $t \in \{1, ..., q_t\}$
+            \State $m_1 \leftarrow SendReader(-,\pi)$ 
+            \State i $\leftarrow$ 1
+            \While{$i < t$}                
+                \State $m_{2i} \gets SendTag(m_{2i-1}, vtag)$ 
+                \State $m_{2i+1} \gets SendReader(m_{2i}, \pi)$
+                \State $i \gets i+1$
+            \EndWhile
+            \State $S \gets$ \text{Corrupt}(vtag)
+            \If{$temporary\ state\ in\ S = empty$}
+                \State \Return 1
+            \EndIf
+        \end{algorithmic}
+    \end{algorithm}
+
+    \cite{Impossibility_results} leaves us with the following lemma:
+
+    \textbf{Lemma 2}: The temporary state of tags is always empty in any stateless narrow-forward RFID scheme. 
+
+    This is justified through contradiction, it is assumed the temporary state is non-empty. The fact is a tag would use temporary 
+    variables if it would communicate with the real oracles. If the protocol would be blinded then all SendTag() calls are simulated, 
+    meaning no temporary variables. An adversary would be able to distinguish between the two cases after a Corrupt() oracle query, 
+    shown in algorithm 6. This contradicts narrow-forward privacy, meaning Lemma 2 holds.
+
+    Lemma 2 formally means: $(S^{\mathcal{T}_{ID}}, \cdot) \gets \mathcal{T}_{ID}^i(S^{\mathcal{T}_{ID}}, \cdot)$. Thus the scheme will 
+    work with a fixed persistent state and an empty temporary state in order to reach higher than weak privacy.
+    
+    \vspace{0.2cm}
+
+    \textbf{Theorem 4}: \textit{There is no stateless RFID scheme that achieves destructive privacy.}
+    
+    \vspace{0.2cm}
+
+    Destructive privacy implies forward privacy so both must be true for a scheme at the same time. For our stateless scheme it is proved in the following
+    that is not the case. The proof is by contradiction so we start with the presumption of privacy and arrive at a conclusion that is false.
+
+    A destructive privacy scheme implies the existence of a blinder $\mathcal{B}$ that can distinguish between the real oracles and their simulation.
+    Using this blinder, $\mathcal{B}_D$, a narrow-forward adversary $\mathcal{A}_{prv}^{\mathcal{B}_D}$ can be constructed. This adversary will be 
+    able to thwart forward privacy, hence the contradiction.
+
+    The scheme makes use of stateless tags, meaning the persistent memory remains the same. Let $\mathcal{T}^{i}$ be the computation done by a tag
+    at the i-th SendTag() query. 
+
+    $\mathcal{A}_{prv}$ is defined in algorithm 7.
+
+    \begin{algorithm}[H] % -> H ca sa stea aici in document
+        \centering
+        \caption{$\mathcal{A}_{prv}$ against destructive privacy}
+        \begin{algorithmic}[1] % 1 -> line numbers
+            \State CreateTag($ID_0$)
+            \State CreateTag($ID_1$)
+            \State $vtag_{0} \leftarrow$ DrawTag($ID_k, Pr(k)= 1/2, k \in \{0,1\}$)
+            \State $\pi \leftarrow$ Launch() 
+            \State $m_1 \leftarrow SendReader(-,\pi)$ 
+            \State $j_{\mathcal{R}} \in \{1, \dots, q_\mathcal{R}\}$
+            \State i $\leftarrow$ 1
+
+            \While{$i < j_{\mathcal{R}}$}                
+                \State $m_{2i} \gets SendTag(m_{2i-1}, vtag_{0})$
+                \State $m_{2i+1} \gets SendReader(m_{2i}, \pi)$
+                \State $i \gets i+1$
+            \EndWhile
+            \State $\mathcal{S}^{\mathcal{T}_{ID}} \gets Corrupt(vtag)$
+            \State $b \in \{0,1\}$
+            \If{$ b = 1 $}
+                \State $ m_{2j_{\mathcal{R}}} \gets \mathcal{T}^{j_{\mathcal{R}}}(\mathcal{S}^{\mathcal{T}_{ID}}, m_{2j_{\mathcal{R}}-1})$
+            \Else
+                \State pick a state with the same distribution as CreateTag()
+                \State $\mathcal{S}^{\mathcal{T}_{ID}} \gets \mathcal{S}$
+                \State $ m_{2j_{\mathcal{R}}} \gets \mathcal{T}^{j_{\mathcal{R}}}(\mathcal{S}^{\mathcal{T}_{ID}}, m_{2j_{\mathcal{R}}-1})$
+            \EndIf
+            \State $m_{2j_{\mathcal{R}}+1} \gets SendReader(m_{2j_{\mathcal{R}}}, \pi)$ 
+            \State i $\leftarrow$ $j_{\mathcal{R}}+1$
+            \While{$i < q_\mathcal{R}$}
+                \State $m_{2i} \gets \mathcal{T}^{i}(\mathcal{S}^{\mathcal{T}_{ID}}, m_{2i-1})$
+                \State $m_{2i+1} \gets SendReader(m_{2i}, \pi)$
+                \State $i \gets i+1$
+            \EndWhile       
+            \State $return (Result(\pi) \land b) \lor (\lnot Result(\pi) \land \lnot b)$
+        \end{algorithmic}
+    \end{algorithm}
+
+    The idea is for the adversary $\mathcal{A}_{prv}$ to forward the messages between the tag and the reader up to a set round $j_{\mathcal{R}}$. After that $\mathcal{A}_{prv}$
+    corrupts $\mathcal{T}$ and gets its state. Even though the adversary is destructive, they can compute the remaining tag steps of the protocol using the 
+    obtained state and the protocol algorithm. $\mathcal{A}_{prv}$ also picks a state at random, with the same distribution as creating a new tag. 
+    Then it picks randomly from the two states and continues the protocol until the end. When the randomly selected state is the one obtained by the 
+    Corrupt oracle, due to correctness the Result() query will yield 1 and for the other case the reader will reject it.
+
+    Algorithm 7 shows that there is an adversary that can distinguish if a tag has changed its state or not.
+
+    The definition for privacy states that there is a blinder $\mathcal{B}_D$ such that $Adv_{\mathcal{A}_{prv}}^{prv} = | Pr[Exp_{\mathcal{A}_{prv}}^{prv-0} = 1] - 
+    Pr[Exp_{\mathcal{A}_{prv}}^{prv-1} = 1] | = \epsilon(l)$ for a neglijible function $\epsilon$. If such a $\mathcal{B}_D$ exists then it can simulate the tag
+    and the reader for the first $j_{\mathcal{R}}$ rounds and after can simulate the reader until the protocol terminates. Two discrete phases can be observed.
+    Thus $\mathcal{B}_D$ can answer Result() queries as well as the reader and by extension can distinguish if the messages have the same origin or not.
+
+    \vspace{0.2cm}
+
+    Next, it is shown how a narrow-forward adversary can use $\mathcal{B}_D$ to distinguish between the blinder $\mathcal{B}$ and the real oracles. This disproves 
+    narrow-forward privacy and in turn destructive privacy. $\mathcal{A}_{prv}$ uses the capabilities of $\mathcal{B}_D$ by feeding it information similarly to 
+    algorithm 7. This is described in the following, algorithm 8. 
+
+    \begin{algorithm}[H] % -> H ca sa stea aici in document
+        \centering
+        \caption{$\mathcal{A}_{prv}^{\mathcal{B}_D}$ against narrow-forward privacy}
+        \begin{algorithmic}[1] % 1 -> line numbers
+            \State CreateTag($ID_0$)  \Comment{shown to $\mathcal{B}_D \rightarrow 1$}
+            \State CreateTag($ID_1$)  \Comment{shown to $\mathcal{B}_D \rightarrow 2$}
+            \State $vtag_{0} \leftarrow$ DrawTag($ID_k, Pr(k)= 1/2, k \in \{0,1\}$)  \Comment{shown to $\mathcal{B}_D \rightarrow 3$}
+            \State $\pi \leftarrow$ Launch()  \Comment{simulated by $\mathcal{B}_D \rightarrow 4$}
+            \State $m_1 \leftarrow SendReader(-,\pi)$  \Comment{simulated by $\mathcal{B}_D \rightarrow 5$}
+            \State $j_{\mathcal{R}} \in \{1, \dots, q_\mathcal{R}\}$
+            \State i $\leftarrow$ 1
+
+            \While{$i < j_{\mathcal{R}}$}                
+                \State $m_{2i} \gets SendTag(m_{2i-1}, vtag_{0})$  \Comment{simulated by $\mathcal{B}_D \rightarrow 9$}
+                \State $m_{2i+1} \gets SendReader(m_{2i}, \pi)$  \Comment{simulated by $\mathcal{B}_D \rightarrow 10$}
+                \State $i \gets i+1$
+            \EndWhile
+            \State $m_{2j_{\mathcal{R}}} \gets SendTag(m_{2j_{\mathcal{R}}-1}, vtag_{0})$ \Comment{computed\ by\ $vtag_{0}\ with\ real\ oracles\ or\ blinder$}
+            \State $Free(vtag_{0})$
+            \State $vtag_{1} \leftarrow$ DrawTag($ID_k, Pr(k)= 1/2, k \in \{0,1\}$)
+            \State $\mathcal{S}^{\mathcal{T}_{ID}} \gets Corrupt(vtag_{1})$  \Comment{shown to $\mathcal{B}_D \rightarrow 13$}
+            \State $m_{2j_{\mathcal{R}}+1} \gets SendReader(m_{2j_{\mathcal{R}}}, \pi)$  \Comment{simulated by $\mathcal{B}_D \rightarrow 22$}
+            \State $i \gets j_{\mathcal{R}}+1$
+            \While{$i < q_\mathcal{R}$}
+                \State $m_{2i} \gets \mathcal{T}^{i}(\mathcal{S}^{\mathcal{T}_{ID}}, m_{2i-1})$  \Comment{computed by $\mathcal{A}_{prv}^{\mathcal{B}_D}$}
+                \State $m_{2i+1} \gets SendReader(m_{2i}, \pi)$  \Comment{simulated by $\mathcal{B}_D \rightarrow 26$}
+                \State $i \gets i+1$
+            \EndWhile 
+            \State $b \gets Result(\pi)$  \Comment{simulated by $\mathcal{B}_D \rightarrow 29$}
+            \State $return (\Gamma[vtag_{0}] = \Gamma[vtag_{1}] \land b) \lor (\Gamma[vtag_{0}] \neq \Gamma[vtag_{1}] \land \lnot b)$
+        \end{algorithmic}
+    \end{algorithm}
+
+    The adversary makes $\mathcal{B}_D$ to compute the first $j_{\mathcal{R}}$ rounds of the protocol(8-12). After, $\mathcal{A}_{prv}^{\mathcal{B}_D}$ queries the 
+    SendTag() oracle with message $m_{2j_{\mathcal{R}}-1}$ given by $\mathcal{B}_D$. This is the tag side of the protocol for step $j_{\mathcal{R}}$. Next the adversary
+    frees $vtag_{0}$ and draws a new tag: $vtag_{1}$. Steps 13-15 are not shown to $\mathcal{B}_D$. Next $\mathcal{A}_{prv}^{\mathcal{B}_D}$ obtains the state of
+    the new tag $vtag_{1}$ by corrupting it. This is shown to $\mathcal{B}_D$. $\mathcal{A}_{prv}^{\mathcal{B}_D}$ sends $\mathcal{B}_D$ the message $m_{2j_{\mathcal{R}}}$ 
+    (line 13). This message has been computed either with the real oracles or via blinder $\mathcal{B}$. $\mathcal{B}_D$ expects this message to be the product of the Corrupt()
+    oracle(line 12, algorithm 7).
+
+    Until now the algorithm has computed $j_{\mathcal{R}}$ steps with a tag and 2 options discerned themselves, to continue with the original tag or choose another. The selected 
+    tag will be subjected to the experiment done by $\mathcal{B}_D$. 
+
+    After the protocol enters phase 2 of $\mathcal{B}_D$, it plays the reader side until the end. By hypothesis $\mathcal{B}_D$ can distinguish if the messages received in the second
+    phase match the behaviour of the tag from the first phase, in which case Result() will output 1 or not, and Result() will output 0. 
+    
+    \vspace{0.2cm}
+
+    What remains is to calculate the advantage $Adv_{\mathcal{A}_{prv}^{\mathcal{B}_D}}^{prv}$ if $\mathcal{B}_D$ exists.
+
+    Firstly the case in which the adversary interacts with the real oracles, i.e. uses the real SendTag() oracle (line 13 of algorithm 8). If
+    $\Gamma(vtag_0) = \Gamma(vtag_1)$ then by the capabilities of $\mathcal{B}_D$ the Result query returns 1 with overwhelming probability, which
+    leads to $Adv_{\mathcal{A}_{prv}^{\mathcal{B}_D}}^{prv}$ returning 1 by the same probability. Even though $\mathcal{B}_D$ receives the state
+    $\mathcal{S}^{\mathcal{T}_{ID}}$ after the first phase by the property of Lemma 2, the state is the same as in the beggining of the protocol.
+    If $\Gamma(vtag_0) \neq \Gamma(vtag_1)$ then the messages in the first phase were computed to the state of one vtag and the rest were computed
+    to the state of a vtag identifying another tag. This is not what $\mathcal{B}_D$ expects and it could wrongly output 1. Let p be the probability
+    of $\mathcal{B}_D$ outputing 0 after $j_\mathcal{R}$ messages computed with a random state and the rest computed by an arbitrary state 
+    $\mathcal{S}^{\mathcal{T}_{ID}}$. Thus $Pr[Exp_{\mathcal{A}_{prv}^{\mathcal{B}_D}}^{prv-0} = 1] = \frac{1}{2}*(1-\epsilon(l))
+    +\frac{1}{2}*p \leq \frac{(1+p)}{2}.$
+
+    Next, we study the case where $\mathcal{A}_{prv}$ interacts with a blinder $\mathcal{B}$. For the both cases: $\Gamma(vtag_0) = \Gamma(vtag_1)$ and 
+    $\Gamma(vtag_0) \neq \Gamma(vtag_1)$ the output of the SendTag() query computed by $\mathcal{B}_D$ is by way of a random state that is
+    with overwhelming probability different from $vtag_0$ or $vtag_1$. Thus in both cases $j_\mathcal{R}$ messages are computed with a random 
+    state different than $\mathcal{S}^{\mathcal{T}_{ID}}$ and the rest computed by an arbitrary state $\mathcal{S}^{\mathcal{T}_{ID}}$. Therefore 
+    $Pr[Exp_{\mathcal{A}_{prv}^{\mathcal{B}_D}}^{prv-1} = 1] = \frac{1}{2}*(1-p)+\frac{1}{2}*p = \frac{(1-p)}{2}+\frac{p}{2} = \frac{1}{2}.$
+    What follows is that $Adv_{\mathcal{A}_{prv}^{\mathcal{B}_D}}^{prv} \leq | \frac{(1+p)}{2} - \frac{1}{2} | = \frac{p}{2}$. Given the way in 
+    which probability p is defined and the fact that $\mathcal{B}_D$ is able to distinguish if a state changed through a protocol instance then
+    p is non-negligible and so is $Adv_{\mathcal{A}_{prv}^{\mathcal{B}_D}}^{prv}$, concluding the proof. 
+    
