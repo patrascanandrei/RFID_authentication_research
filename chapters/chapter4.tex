@@ -1,39 +1,51 @@
 \chapter{Case study}
 
-\hspace*{1cm} 
     For the authentication proposed in \cite{BOM}, the tag stores in it's permanent memory the values: \textit{A, B, p, f(p), S, Z, $W_i$}. The global temporary memory will hold the value $N_t$
     used to authenticate the reader. It is generated at step 2 and held until just after step 10.
 
-    \begin{table}[H]
-        \centering
-        \caption{\label{tab2}Steps performed by the tag}
-        \begin{tabular}{cc}
-            \hline
-            Tag \\
-            \hline
-            \textit{A, B, p, f(p), $N_t$, S, Z, $W_i$} \\
-            \hline
-            \text{2.Generates \colorbox{pink}{$N_t$}} \\
-            ... \\
-            \text{10.D(E(\colorbox{pink}{$N_t$}$||S_d||S_p||S_c$,A,p),B,p)} \\
-            \text{Calculates mod($S_d$,Z)} \\
-            \text{Calculates mod($S_p$,$W_i$)} \\
-            \text{Calculates mod($S_c$,$N_c$)} \\
-            \text{E($N_t+1||ID$,$A_{new}$,q)} \\
-        \end{tabular}
-    \end{table}
+    \definecolor{mygray}{gray}{0.75}
 
-    The adversary can interact with the protocol the following way: \\
-    \hspace*{1cm} 
-    1. Adversary waits for a legitimate tag to respond to a reader query(step 3 of the protocol): E($N_t||S$,A,p)\\
-    \hspace*{1cm}
-    2. Adversary intercepts the response of the reader(step 9 of the protocol)to the tag: E($N_t||S_d||S_p||S_c$,A,p)\\
-    \hspace*{1cm}
-    3. Having the access to the tag, the adversary corrupts the tag and gets it's internal state. By doing that the adversary now knows A, B, p, f(p), S, Z, $W_i$ and the nonce $N_t$.\\
-    \hspace*{1cm}
-    4. Adversary decrypts E($N_t||S_d||S_p||S_c$,A,p) using the values B and p. Now the adversary has access to $S_d, S_p, S_c$ and computes the values $A_{new}$ and q.\\
-    \hspace*{1cm}
-    5. Using the newly obtained $A_{new}$ and q, adversary increments $N_t$,appends ID(found in the tag's memory when the corruption occured) and encrypts. \\
-    \hspace*{1cm}
-    6. Adversary sends the message to the reader whom can not descern that the tag has been tampered with. \\
+    \begin{adjustwidth}{-60pt}{}
+    \procedureblock[colspace=-0.5cm]{The two way DBKM-SUEO-SUM-RFID protocol: use of temporary variable $N_t$}{
+    \textbf{Reader} \< \< \textbf{Tag} \\[-1ex]
+    \textit{A, B, p, f(p),$N_r$, S, Z, $W_i$} \< \< \textit{A, B, p, f(p),$N_t$, S, Z, $W_i$} \\[-1.5ex]
+    % \\
+    \< \< \text{ \scriptsize 2.Generates \colorbox{mygray}{$N_t$}} \\[-1ex]
+    \< \< \text{ \scriptsize E($N_t||S$,A,p)} \\[-4ex]
+    % \\
+    \< \sendmessageleft{top=\text{ \scriptsize 3.E($N_t||S$,A,p)}} \< \\[-4ex]
+    % \\
+    \text{ \scriptsize 4.D(E(\colorbox{mygray}{$N_t$}$||$\colorbox{olive}{$S$},A,p),B,p)} \< \< \\[-1ex]
+    \text{ \scriptsize Generates $N_r$} \< \< \\[-1ex]
+    \text{ \scriptsize E($N_r||S$,A,p)} \< \< \\[-1ex]
+    % \\
+    \text{ \scriptsize ...} \< \< \\[-1ex]
+    % \\
+    \text{ \scriptsize 8.D(E($N_r||S_d||S_p||S_c$,A,p),B,p)} \< \< \\[-1ex]
+    \text{ \scriptsize E(\colorbox{mygray}{$N_t$}$||S_d||S_p||S_c$, A, p)} \< \< \\[-4ex]
+    % \\
+    \<\sendmessageright{top = \text{ \scriptsize 9.E($N_t||S_d||S_p||S_c$,A,p)}}\<\\[-4ex]
+    % \\
+    \< \< \text{ \scriptsize 10.D(E(\colorbox{mygray}{$N_t$}$||S_d||S_p||S_c$,A,p),B,p)} \\[-1ex]
+    \< \< \text{ \scriptsize Calculates mod($S_d$,Z)} \\[-1ex]
+    \< \< \text{ \scriptsize Calculates mod($S_p$,$W_i$)} \\[-1ex]
+    \< \< \text{ \scriptsize Calculates mod($S_c$,$N_c$)} \\[-1ex]
+    \< \< \text{ \scriptsize E($N_t+1||ID$,$A_{new}$,q)} \\[-4ex]
+    % \\
+    }
+    \end{adjustwidth}
+
+    The adversary can interact with the protocol the following way:
+
+    1. Adversary waits for a legitimate tag to respond to a reader query(step 3 of the protocol): E($N_t||S$,A,p)
+    
+    2. Adversary intercepts the response of the reader(step 9 of the protocol)to the tag: E($N_t||S_d||S_p||S_c$,A,p)
+    
+    3. Having the access to the tag, the adversary corrupts the tag and gets it's internal state. By doing that the adversary now knows A, B, p, f(p), S, Z, $W_i$ and the nonce $N_t$.
+    
+    4. Adversary decrypts E($N_t||S_d||S_p||S_c$,A,p) using the values B and p. Now the adversary has access to $S_d, S_p, S_c$ and computes the values $A_{new}$ and q.
+    
+    5. Using the newly obtained $A_{new}$ and q, adversary increments $N_t$, appends ID(found in the tag's memory when the corruption occured) and encrypts.
+    
+    6. Adversary sends the message to the reader whom can not descern that the tag has been tampered with.
 

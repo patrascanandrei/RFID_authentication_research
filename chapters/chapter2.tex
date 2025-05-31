@@ -1,24 +1,20 @@
 \chapter{RFID Authentication}
 
 \section{Primitives used}
-\hspace*{1cm} 
     The chosen paper\cite{BOM}'s authentication is presented in the following chapter. The Protocol makes use of a diagonal block key matrix (DBKM) encryption algorithm for it's property of 
     expanding the key size of the encryption without need of extensive resources. It insurres a balance between security and lightness of operations. Another component is the self updating encryption 
-    order (SUEO) and it's role is to boost security. Lastly a self updating modulus (SUM) algorithm is deployed to weaken the correlation between the plaintext and the ciphertext. \\
-\hspace*{1cm}
+    order (SUEO) and it's role is to boost security. Lastly a self updating modulus (SUM) algorithm is deployed to weaken the correlation between the plaintext and the ciphertext.
+    
     These three algorithms are used to form the block-order-modulus variable matrix encryption algorithm, dubbed the DBKM-SUEO-SUM algorithm.
 
 \section{Primitives' structure}
-\hspace*{1cm}
 
     \cite{BOM} proposes 3 corollaries based on block matrix properties and modulo operations that make the base for the primitives.
 
-\vspace{0.5cm}
-\hspace{1cm}
-    A. DBKM
+    A. \textbf{DBKM}
 
-    Its corollary 2 states that for 2 square matrices $A_1$ and $A_2$ if $A_1 \times t_1$ mod(p) = $c_1$ and $A_2 \times t_2$ mod(p) = $c_2$ exist then:
-    \begin{gather}
+    For two square matrices $A_1$ and $A_2$: if $A_1 \times t_1$ mod(p) = $c_1$ and $A_2 \times t_2$ mod(p) = $c_2$ exist then:
+    \begin{gather*}
         \begin{pmatrix}
         A_1 &  \\
             & A_2
@@ -34,36 +30,42 @@
             c_1  \\
             c_2
         \end{pmatrix}
-    \end{gather}
+    \end{gather*}
 
-    Updating the order of the first matrix along the main diagonal yields multiple key matrices of different sizes thus expanding the key size. For the fact that it uses 2 matrices $A_1$ and
-    $A_2$ as its building blocks the tag does not need to keep multiple separate keys in its memory.
+    Updating the order of the first matrix along the main diagonal yields multiple key matrices of different sizes thus expanding the key size. For the fact that 
+    it uses 2 matrices $A_1$ and $A_2$ as its building blocks the tag does not need to keep multiple separate keys in its memory.
 
-\vspace{0.5cm}
-\hspace{1cm}
-    B. SUEO
+    B. \textbf{SUEO}
 
-    Its corollary 3 states that for 2 square matrices $A_1$ and $A_2$ if $A_1 \times t$ mod(p) = $c_1$ and $A_2 \times c_1$ mod(p) = $c_2$ exist and $A_2 \times t$ mod(p) = $c_3$ and 
+    For 2 square matrices $A_1$ and $A_2$: if $A_1 \times t$ mod(p) = $c_1$ and $A_2 \times c_1$ mod(p) = $c_2$ exist and $A_2 \times t$ mod(p) = $c_3$ and 
     $A_1 \times c_3$ mod(p) = $c_4$ exist then: 
     
-    \begin{gather}
+    \begin{gather*}
         c_2 \neq c_4
-    \end{gather}
+    \end{gather*}
 
     Using the property of non-commutativity of matrices one can change the order of the multiplications to get different ciphertexts. This change is equivalent to having multiple keys for
-    encryption but with this result security can be improved without using extra storage space.
+    encryption but with this result security can be improved without using additional storage space.
 
-\vspace{0.5cm}
-\hspace{1cm}
-    C. SUM
+    C. \textbf{SUM}
 
-    Its corollary 4 states that for 2 square matrices $A$ and $B$ and $A \times B$ = $I$(identity matrix)mod(p) then: 
+    For 2 square matrices $A$ and $B$ and $A \times B$ = $I$(identity matrix)mod(p) then: 
     
-    \begin{equation}
-        \textit{B is the modulus p-inverse matrix of A and the modulus q-inverse of A, for a q integer divisor of p.} \tag{3}
-    \end{equation}
+    \begin{gather*}
+        \textit{B is the modulus p-inverse matrix of A and the modulus q-inverse of A,}\\
+        \textit{for a q integer divisor of p.}
+    \end{gather*}
 
     Thus the change in modulus still yields an inverse and the decryption process can still happen but the correlation between the ciphertext and the plaintext is weakened.
+
+    D. \textbf{DBKM-SUEO-SUM}
+
+    The above three components can be used for an encryption and decryption algorithm. The following figure represents an example with two key matrices and three
+    integer divisors of modulus p.
+
+    \begin{center}
+    \includegraphics[width=0.7\textwidth]{Protocol_base_scheme.png}
+    \end{center}
 
 \section{Specific steps of the authentication protocol}
 
@@ -95,13 +97,13 @@
 \noindent{
     The notation used in the protocol are shown in table 1. The details of it are are follows:
 
-    1. The reader sends a query to the tag.
+    1. The reader sends a query to the tag. This activates tags without batteries.
 
     2. The tag uses its internal pseudo-random number generator to get nonce $N_t$. After that the tag uses the encryption matrix A and the modulus p to encrypt $N_t||S$.
 
     3. The tag sends the message E($N_t||S$,A,p) to the reader. 
 
-    4. The reader decrypts E($N_t||S$,A,p) and obtains the secret S. If S can be queried, the readed has authenticated the tag succesfully and accepted value $N_t$, else the protocol is stopped. 
+    4. The reader decrypts E($N_t||S$,A,p) and obtains the secret S. If S can be queried, the reader has authenticated the tag succesfully and accepted nonce $N_t$, else the protocol is stopped. 
         After that, the reader generates nonce $N_r$ and uses A and p to encrypt $N_r||S$. 
 
     5. The reader sends E($N_r||S$,A,p) to the server. 
@@ -111,12 +113,12 @@
 
     7. The server sends E($N_r||S_d||S_p||S_c$,A,p) to the reader. 
 
-    8. The reader decrypts E($N_r||S_d||S_p||S_c$,A,p) and obtains $N_r$. If the value $N_r$ received matches the saved one then the reader authenticates the server. In this case the new secret values 
+    8. The reader decrypts E($N_r||S_d||S_p||S_c$,A,p) and obtains $N_r$. If the value $N_r$ received matches the saved value then the reader authenticates the server. In this case the new secret values 
         $S_d,S_p,S_c$ are accepted, if not the protocol is stopped. Afterwards the reader uses A and p to encrypt $N_t||S_d||S_p||S_c$. 
 
     9. The reader sends E($N_t||S_d||S_p||S_c$,A,p) to the tag. 
 
-    10. The tag decrypts E($N_t||S_d||S_p||S_c$,A,p) and obtains $N_t$. If the value $N_t$ received matches the saved one then the tag authenticates the reader. Following that the new secret values 
+    10. The tag decrypts E($N_t||S_d||S_p||S_c$,A,p) and obtains $N_t$. If the value $N_t$ received matches the saved value then the tag authenticates the reader. Following that the new secret values 
         $S_d,S_p,S_c$ are accepted, if not the protocol is stopped. Subsequently fresh protocol parameters are calculted: mod($S_d$, Z) to determine the construction of diagonal block key matrix, 
         mod($S_p, W_i$) to determine the encryption order, mod($S_c, N_c$) to determine the choice of the new modulus. With the new key matrix $A_{new}$, new modulus q and encryption order, the tag 
         encrypts $N_t+1||ID$.
@@ -124,12 +126,12 @@
     11. The tag sends E($N_t+1||ID$,$A_{new}$,q) to the reader.
     
     12. Reader calculates mod($S_d$,Z), mod($S_p$,$W_i$), mod($S_c$,$N_c$) itself. Then it decrypts E($N_t+1||ID$,$A_{new}$,q) 
-    using the newly calculted $B_{new}$ and q. If the value $N_t$ matches the saved one, ID is obtained. The reader uses $A_{new}$ and q to encrypt $N_r+1||ID$. 
+    using the newly calculted $B_{new}$ and q. If the value $N_t$ matches the saved value, ID is obtained. The reader uses $A_{new}$ and q to encrypt $N_r+1||ID$. 
 
     13. The reader sends E($N_r+1||ID$,$A_{new}$,q) to the server.
 
     14. Server calculates mod($S_d$,Z), mod($S_p$,$W_i$), mod($S_c$,$N_c$) itself. It decrypts E($N_r+1||ID$,$A_{new}$,q) using the newly calculted $B_{new}$ and q. If the value $N_r$ 
-    matches the saved one, ID is obtained.
+    matches the saved value, the server obtains ID.
     
 }
 
