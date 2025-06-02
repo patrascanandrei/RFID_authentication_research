@@ -56,7 +56,7 @@
 \begin{table}[H]
     \centering
     \caption{The security properties claimed by \cite{BOM}}
-    \begin{tabular}{cc}
+    \begin{tabular}{| c | c |}
         \hline
         Protocol & Claimed \\
         \hline
@@ -75,14 +75,49 @@
     However many of the security claims do not hold in the context of tag corruption. An important note is that an adversary can corrupt
     a tag during the execution of the protocol, being it earlier or later in its computation.
 
-    In the case of mutual authentication, an adversary can use the Corrupt() oracle to obtain secret $S$. By calling the CreateTag()
+    In the case of \textbf{mutual authentication}, an adversary can use the Corrupt() oracle to obtain secret $S$. By calling the CreateTag()
     oracle and using value $S$ illegitimate tags can be authenticated by a reader. Thus tag authentication is countered.
     For reader authentication the adversary can corrupt
     multiple tags and store combinations of matrices $A$, $B$ and modulus $p$ and with an illegitimate reader be able to succesfully
     authenticate legitimate tags. This is possible by being able to decrypt (step 4 of the protocol) and obtain nonce $N_t$ which can
-    be returned to the tag (step 9 of the protocol).
+    be returned to the tag (step 9 of the protocol). This way of thwarting authentication is also the base for \textbf{impersonation attacks}.
     
-    In the case of location tracking an adversary can corrupt a tag and infer relations or straight out obtain secret value $S$, meaning
+    In the case of \textbf{location tracking} an adversary can corrupt a tag and infer relations or straight out obtain secret value $S$, meaning
     they can link it with a particular location. Strong adversaries can corrupt the tags and release them back. By sending a query(step 1
     of the protocol) and breaking reader authentication the adversary can further track the tag in case it was moved.
 
+    A \textbf{DoS attack} consists in sending large amounts of data to a system in order to cause it to malfunction. The original protocol
+    stops its execution as soon as a party fails to authenticate another, in an effort to prevent such an attack. However if the adversary 
+    has access to sensitive data from tags then a DoS attack is more plausible than initially thought.
+
+    The adversary can also use the sensitive information from a tag to implement a \textbf{man-in-the-middle attack}, for example the 
+    interaction described in section 4.1.
+
+\section{Achievable classes of privacy}
+
+    Clearly access to the Corrupt oracle has major consequences on RFID schemes. Following the impossibility results from section 3, 
+    depending on the tags used, these classes of privacy can be achieved:
+
+    \begin{table}[H]
+    \centering
+    \caption{The security properties achievable for various tags}
+    \begin{tabular}{| c | c |}
+        \hline
+        Class of tag & achievable privacy \\
+        \hline
+        With temporary state disclosure & weak \& narrow-weak privacy\\
+        Without temporary state disclosure & destructive \& narrow-destructive privacy\\
+        Resetable & no privacy \\
+        Stateless & narrow-destructive \& forward privacy \\
+        \hline
+    \end{tabular}
+    \end{table}
+
+    These results lead to an extended discusion about security for a given RFID scheme. The \cite{BOM} scheme achieves mutual
+    authentication between tags and reader and between reader and server. For the former recall:
+
+    \textbf{Theorem 1}: \textit{There is no RFID system in Vaudenay's model that achieves both reader authentication and narrow-forward privacy 
+    under temporary state disclosure.}
+
+    This means that for the scheme presented the achievable privacy is weak or narrow-weak for the case in which the adversary has no
+    access to the Result oracle.
