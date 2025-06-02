@@ -1,5 +1,7 @@
 \chapter{Case study}
 
+\section{Initial given protocol attack}
+
     For the authentication proposed in \cite{BOM}, the tag stores in it's permanent memory the values: \textit{A, B, p, f(p), S, Z, $W_i$}. The global temporary memory will hold the value $N_t$
     used to authenticate the reader. It is generated at step 2 and held until just after step 10.
 
@@ -37,7 +39,8 @@
 
     The adversary can interact with the protocol the following way:
 
-    1. Adversary waits for a legitimate tag to respond to a reader query(step 3 of the protocol): E($N_t||S$,A,p)
+    1. Adversary waits for a legitimate tag to respond to a reader query(step 3 of the protocol): E($N_t||S$,A,p).
+    This can be achieved by also sending a query to the tag, compeling it to compute a nonce and sending E($N_t||S$,A,p).
     
     2. Adversary intercepts the response of the reader(step 9 of the protocol)to the tag: E($N_t||S_d||S_p||S_c$,A,p)
     
@@ -48,4 +51,38 @@
     5. Using the newly obtained $A_{new}$ and q, adversary increments $N_t$, appends ID(found in the tag's memory when the corruption occured) and encrypts.
     
     6. Adversary sends the message to the reader whom can not descern that the tag has been tampered with.
+
+\section{Initial given scheme security}
+\begin{table}[H]
+    \centering
+    \caption{The security properties claimed by \cite{BOM}}
+    \begin{tabular}{cc}
+        \hline
+        Protocol & Claimed \\
+        \hline
+        Mutual authentication & Yes \\
+        Location tracking & Yes \\
+        DoS & Yes \\
+        Impersonation attack & Yes  \\
+        Man-in-the-middle attack & Yes  \\
+        Replay attack & Yes  \\
+        De-synchronization & Yes  \\
+        Forward secrecy & Yes \\
+        \hline
+    \end{tabular}
+\end{table}
+
+    However many of the security claims do not hold in the context of tag corruption. An important note is that an adversary can corrupt
+    a tag during the execution of the protocol, being it earlier or later in its computation.
+
+    In the case of mutual authentication, an adversary can use the Corrupt() oracle to obtain secret $S$. By calling the CreateTag()
+    oracle and using value $S$ illegitimate tags can be authenticated by a reader. Thus tag authentication is countered.
+    For reader authentication the adversary can corrupt
+    multiple tags and store combinations of matrices $A$, $B$ and modulus $p$ and with an illegitimate reader be able to succesfully
+    authenticate legitimate tags. This is possible by being able to decrypt (step 4 of the protocol) and obtain nonce $N_t$ which can
+    be returned to the tag (step 9 of the protocol).
+    
+    In the case of location tracking an adversary can corrupt a tag and infer relations or straight out obtain secret value $S$, meaning
+    they can link it with a particular location. Strong adversaries can corrupt the tags and release them back. By sending a query(step 1
+    of the protocol) and breaking reader authentication the adversary can further track the tag in case it was moved.
 

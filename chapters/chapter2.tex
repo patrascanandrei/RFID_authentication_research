@@ -103,7 +103,7 @@
 
     3. The tag sends the message E($N_t||S$,A,p) to the reader. 
 
-    4. The reader decrypts E($N_t||S$,A,p) and obtains the secret S. If S can be queried, the reader has authenticated the tag succesfully and accepted nonce $N_t$, else the protocol is stopped. 
+    4. The reader decrypts E($N_t||S$,A,p) and obtains the secret S. If S can be queried in its internal database, the reader has authenticated the tag succesfully and accepted nonce $N_t$, else the protocol is stopped. 
         After that, the reader generates nonce $N_r$ and uses A and p to encrypt $N_r||S$. 
 
     5. The reader sends E($N_r||S$,A,p) to the server. 
