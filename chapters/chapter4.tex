@@ -1,34 +1,37 @@
 \chapter{Case study}
+\definecolor{mygray}{gray}{0.75}
+\definecolor{softred}{RGB}{255, 102, 102}
 
 \section{Initial given protocol attack}
 
-    For the authentication proposed in \cite{BOM}, the tag stores in it's permanent memory the values: \textit{A, B, p, f(p), S, Z, $W_i$}. The global temporary memory will hold the value $N_t$
-    used to authenticate the reader. It is generated at step 2 and held until just after step 10.
+    For the authentication proposed in \cite{BOM}, the tag stores in it's permanent memory the values: \textit{A, B, p, f(p), S, Z, $W_i$}.
+    The value $N_c$ designates the cardinality of set f(p), meaning the number of integer divisors of p.
+    The global temporary memory will hold the value $N_t$
+    used to authenticate the reader. It is generated at step 2 and held until step 10.
 
-    \definecolor{mygray}{gray}{0.75}
-
+    % aici schema pentru interactiunea dintre tag si reader
     \begin{adjustwidth}{-60pt}{}
-    \procedureblock[colspace=-0.5cm]{The two way DBKM-SUEO-SUM-RFID protocol: use of temporary variable $N_t$}{
+    \procedureblock[colspace=-0.5cm]{The DBKM-SUEO-SUM-RFID protocol: tag-reader interaction}{
     \textbf{Reader} \< \< \textbf{Tag} \\[-1ex]
-    \textit{A, B, p, f(p),$N_r$, S, Z, $W_i$} \< \< \textit{A, B, p, f(p),$N_t$, S, Z, $W_i$} \\[-1.5ex]
+    \textit{A, B, p, f(p),$N_r$, S, Z, $W_i$} \< \< \textit{ \colorbox{mygray}{A, B, p, f(p),$N_t$, S, Z, $W_i$, $N_c$}} \\[-1.5ex]
     % \\
-    \< \< \text{ \scriptsize 2.Generates \colorbox{mygray}{$N_t$}} \\[-1ex]
+    \< \< \text{ \scriptsize 2.Generates \colorbox{olive}{$N_t$}} \\[-1ex]
     \< \< \text{ \scriptsize E($N_t||S$,A,p)} \\[-4ex]
     % \\
     \< \sendmessageleft{top=\text{ \scriptsize 3.E($N_t||S$,A,p)}} \< \\[-4ex]
     % \\
-    \text{ \scriptsize 4.D(E(\colorbox{mygray}{$N_t$}$||$\colorbox{olive}{$S$},A,p),B,p)} \< \< \\[-1ex]
+    \text{ \scriptsize 4.D(E($N_t||S$,A,p),B,p)} \< \< \\[-1ex]
     \text{ \scriptsize Generates $N_r$} \< \< \\[-1ex]
     \text{ \scriptsize E($N_r||S$,A,p)} \< \< \\[-1ex]
     % \\
     \text{ \scriptsize ...} \< \< \\[-1ex]
     % \\
     \text{ \scriptsize 8.D(E($N_r||S_d||S_p||S_c$,A,p),B,p)} \< \< \\[-1ex]
-    \text{ \scriptsize E(\colorbox{mygray}{$N_t$}$||S_d||S_p||S_c$, A, p)} \< \< \\[-4ex]
+    \text{ \scriptsize E($N_t||S_d||S_p||S_c$, A, p)} \< \< \\[-4ex]
     % \\
     \<\sendmessageright{top = \text{ \scriptsize 9.E($N_t||S_d||S_p||S_c$,A,p)}}\<\\[-4ex]
     % \\
-    \< \< \text{ \scriptsize 10.D(E(\colorbox{mygray}{$N_t$}$||S_d||S_p||S_c$,A,p),B,p)} \\[-1ex]
+    \< \< \text{ \scriptsize 10.D(E($N_t||S_d||S_p||S_c$,A,p),B,p)} \\[-1ex]
     \< \< \text{ \scriptsize Calculates mod($S_d$,Z)} \\[-1ex]
     \< \< \text{ \scriptsize Calculates mod($S_p$,$W_i$)} \\[-1ex]
     \< \< \text{ \scriptsize Calculates mod($S_c$,$N_c$)} \\[-1ex]
@@ -51,6 +54,42 @@
     5. Using the newly obtained $A_{new}$ and q, adversary increments $N_t$, appends ID(found in the tag's memory when the corruption occured) and encrypts.
     
     6. Adversary sends the message to the reader whom can not descern that the tag has been tampered with.
+
+    % aici schema pentru atacul de mai sus
+
+    \begin{adjustwidth}{-60pt}{}
+    \procedureblock[colspace=-0.5cm]{The DBKM-SUEO-SUM-RFID protocol: Corrupt attack}{
+    \textbf{Reader} \< \< \textbf{Tag} \\[-1ex]
+    \textit{A, B, p, f(p),$N_r$, S, Z, $W_i$} \< \< \textit{A, B, p, f(p),$N_t$, S, Z, $W_i$, $N_c$} \\[-1.5ex]
+    % \\
+    \< \sendmessageright{top=\text{ \scriptsize \colorbox{softred}{$A$ sends query}}} \< \\[-4ex]
+    % \\
+    \< \< \text{ \scriptsize 2.Generates $N_t$} \\[-1ex]
+    \< \< \text{ \scriptsize E($N_t||S$,A,p)} \\[-4ex]
+    % \\
+    \< \sendmessageleft{top=\text{ \scriptsize 3.E($N_t||S$,A,p)}} \< \\[-4ex]
+    % \\
+    \text{ \scriptsize 4.D(E($N_t||S$,A,p),B,p)} \< \< \\[-1ex]
+    \text{ \scriptsize Generates $N_r$} \< \< \\[-1ex]
+    \text{ \scriptsize E($N_r||S$,A,p)} \< \< \\[-1ex]
+    % \\
+    \text{ \scriptsize ...} \< \< \\[-1ex]
+    % \\
+    \text{ \scriptsize 8.D(E($N_r||S_d||S_p||S_c$,A,p),B,p)} \< \< \\[-1ex]
+    \text{ \scriptsize E($N_t||S_d||S_p||S_c$, A, p)} \< \< \\[-4ex]
+    % \\
+    \<\sendmessageright{top = \text{ \scriptsize \colorbox{softred}{9.E($N_t||S_d||S_p||S_c$,A,p)}}, bottom = \text{\scriptsize \colorbox{softred}{Intercepted by $A$}}}\<\\[-4ex]
+    % \\
+    \< \< \text{ \scriptsize \colorbox{softred}{$A$ corrupts the tag, gets B, p and $S$}} \\[-1ex]
+    \< \< \text{ \scriptsize \colorbox{softred}{$A$ can decrypt and use the tag}} \\[-1ex]
+    \< \< \text{ \scriptsize 10.D(E($N_t||S_d||S_p||S_c$,A,p),B,p)} \\[-1ex]
+    \< \< \text{ \scriptsize Calculates mod($S_d$,Z)} \\[-1ex]
+    \< \< \text{ \scriptsize Calculates mod($S_p$,$W_i$)} \\[-1ex]
+    \< \< \text{ \scriptsize Calculates mod($S_c$,$N_c$)} \\[-1ex]
+    \< \< \text{ \scriptsize E($N_t+1||ID$,$A_{new}$,q)} \\[-4ex]
+    % \\
+    }
+    \end{adjustwidth}
 
 \section{Initial given scheme security}
 \begin{table}[H]
@@ -114,10 +153,60 @@
     \end{table}
 
     These results lead to an extended discusion about security for a given RFID scheme. The \cite{BOM} scheme achieves mutual
-    authentication between tags and reader and between reader and server. For the former recall:
+    authentication between tags and reader and between reader and server. For the former, the reader authenticates the tag by
+    receiving the secret value $S$ and querying it into its internal database to check its legitimacy. Reader authentication is
+    achieved by decrypting the message at step 9 and receiving back value $N_t$. Only the reader should be able to decrypt 
+    E($N_t||S$,A,p) (step 3) and obtain $N_t$ and be able to send it back, thus proving authenticity.
+    
+    % aici schema pentru mutual authentication
+    \begin{adjustwidth}{-60pt}{}
+    \procedureblock[colspace=-0.5cm]{The two way DBKM-SUEO-SUM-RFID protocol: use of temporary variable $N_t$}{
+    \textbf{Reader} \< \< \textbf{Tag} \\[-1ex]
+    \textit{A, B, p, f(p),$N_r$, S, Z, $W_i$} \< \< \textit{A, B, p, f(p),$N_t$, S, Z, $W_i$, $N_c$} \\[-1.5ex]
+    % \\
+    \< \< \text{ \scriptsize 2.Generates \colorbox{mygray}{$N_t$}} \\[-1ex]
+    \< \< \text{ \scriptsize E($N_t||S$,A,p)} \\[-4ex]
+    % \\
+    \< \sendmessageleft{top=\text{ \scriptsize 3.E($N_t||S$,A,p)}} \< \\[-4ex]
+    % \\
+    \text{ \scriptsize 4.D(E(\colorbox{mygray}{$N_t$}$||$\colorbox{olive}{$S$},A,p),B,p)} \< \< \\[-1ex]
+    \text{ \scriptsize Generates $N_r$} \< \< \\[-1ex]
+    \text{ \scriptsize E($N_r||S$,A,p)} \< \< \\[-1ex]
+    % \\
+    \text{ \scriptsize ...} \< \< \\[-1ex]
+    % \\
+    \text{ \scriptsize 8.D(E($N_r||S_d||S_p||S_c$,A,p),B,p)} \< \< \\[-1ex]
+    \text{ \scriptsize E(\colorbox{mygray}{$N_t$}$||S_d||S_p||S_c$, A, p)} \< \< \\[-4ex]
+    % \\
+    \<\sendmessageright{top = \text{ \scriptsize 9.E($N_t||S_d||S_p||S_c$,A,p)}}\<\\[-4ex]
+    % \\
+    \< \< \text{ \scriptsize 10.D(E(\colorbox{mygray}{$N_t$}$||S_d||S_p||S_c$,A,p),B,p)} \\[-1ex]
+    \< \< \text{ \scriptsize Calculates mod($S_d$,Z)} \\[-1ex]
+    \< \< \text{ \scriptsize Calculates mod($S_p$,$W_i$)} \\[-1ex]
+    \< \< \text{ \scriptsize Calculates mod($S_c$,$N_c$)} \\[-1ex]
+    \< \< \text{ \scriptsize E($N_t+1||ID$,$A_{new}$,q)} \\[-4ex]
+    % \\
+    }
+    \end{adjustwidth}
+    
+    For tag-reader mutual authentication recall:
 
     \textbf{Theorem 1}: \textit{There is no RFID system in Vaudenay's model that achieves both reader authentication and narrow-forward privacy 
     under temporary state disclosure.}
 
     This means that for the scheme presented the achievable privacy is weak or narrow-weak for the case in which the adversary has no
-    access to the Result oracle.
+    access to the Result oracle. This result is based on the presumption that temporary state disclosure includes the temporary
+    memory of the tag and additionally the persistent state.
+
+    For the case of disclosure of only the permanent state of the tag the impossibility results of theorem 2 state:
+
+    \textbf{Theorem 2}: \textit{There is no RFID system in Vaudenay's model that achieves both reader authentication and narrow-strong privacy 
+    under permanent state disclosure.}
+
+    Thus under the presumption that the Corrupt oracle yields only the permanent state the scheme can achieve at most destructive or
+    narrow-destructive privacy.
+
+    Resetable tags and the ability of the adversary to change the state to its initial values lead to the impossibility of narrow-weak
+    privacy. Thus the use of such tags does not guarantee even the weakest class of privacy.
+
+    Stateless tags do not change their internal memory and the use of them can yield at best narrow-destructive or forward privacy.
