@@ -1,13 +1,13 @@
-\chapter{RFID Authentication}
+\chapter{Authentication in RFID authentication protocol}
 
-\section{Primitives used}
+\section{Introduction}
     The chosen paper\cite{BOM}'s authentication is presented in the following chapter. The Protocol makes use of a diagonal block key matrix (DBKM) encryption algorithm for it's property of 
     expanding the key size of the encryption without need of extensive resources. It insurres a balance between security and lightness of operations. Another component is the self updating encryption 
     order (SUEO) and it's role is to boost security. Lastly a self updating modulus (SUM) algorithm is deployed to weaken the correlation between the plaintext and the ciphertext.
     
     These three algorithms are used to form the block-order-modulus variable matrix encryption algorithm, dubbed the DBKM-SUEO-SUM algorithm.
 
-\section{Primitives' structure}
+\section{Protocol's structure}
 
     \cite{BOM} proposes 3 corollaries based on block matrix properties and modulo operations that make the base for the primitives.
 

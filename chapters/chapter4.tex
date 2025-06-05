@@ -1,8 +1,8 @@
 \chapter{Case study}
 \definecolor{mygray}{gray}{0.75}
-\definecolor{softred}{RGB}{255, 102, 102}
+\definecolor{softred}{RGB}{255, 162, 162}
 
-\section{Initial given protocol attack}
+\section{A protocol attack}
 
     For the authentication proposed in \cite{BOM}, the tag stores in it's permanent memory the values: \textit{A, B, p, f(p), S, Z, $W_i$}.
     The value $N_c$ designates the cardinality of set f(p), meaning the number of integer divisors of p.
@@ -11,7 +11,7 @@
 
     % aici schema pentru interactiunea dintre tag si reader
     \begin{adjustwidth}{-60pt}{}
-    \procedureblock[colspace=-0.5cm]{The DBKM-SUEO-SUM-RFID protocol: tag-reader interaction}{
+    \procedureblock[colspace=-0.5cm]{The tag-reader side protocol: Tag memory usage}{
     \textbf{Reader} \< \< \textbf{Tag} \\[-1ex]
     \textit{A, B, p, f(p),$N_r$, S, Z, $W_i$} \< \< \textit{ \colorbox{mygray}{A, B, p, f(p),$N_t$, S, Z, $W_i$, $N_c$}} \\[-1.5ex]
     % \\
@@ -58,7 +58,7 @@
     % aici schema pentru atacul de mai sus
 
     \begin{adjustwidth}{-60pt}{}
-    \procedureblock[colspace=-0.5cm]{The DBKM-SUEO-SUM-RFID protocol: Corrupt attack}{
+    \procedureblock[colspace=-0.5cm]{The tag-reader side protocol: Corrupt attack}{
     \textbf{Reader} \< \< \textbf{Tag} \\[-1ex]
     \textit{A, B, p, f(p),$N_r$, S, Z, $W_i$} \< \< \textit{A, B, p, f(p),$N_t$, S, Z, $W_i$, $N_c$} \\[-1.5ex]
     % \\
@@ -91,7 +91,7 @@
     }
     \end{adjustwidth}
 
-\section{Initial given scheme security}
+\section{Scheme security}
 \begin{table}[H]
     \centering
     \caption{The security properties claimed by \cite{BOM}}
@@ -160,7 +160,7 @@
     
     % aici schema pentru mutual authentication
     \begin{adjustwidth}{-60pt}{}
-    \procedureblock[colspace=-0.5cm]{The two way DBKM-SUEO-SUM-RFID protocol: use of temporary variable $N_t$}{
+    \procedureblock[colspace=-0.5cm]{The tag-reader side protocol: mutual authentication}{
     \textbf{Reader} \< \< \textbf{Tag} \\[-1ex]
     \textit{A, B, p, f(p),$N_r$, S, Z, $W_i$} \< \< \textit{A, B, p, f(p),$N_t$, S, Z, $W_i$, $N_c$} \\[-1.5ex]
     % \\
