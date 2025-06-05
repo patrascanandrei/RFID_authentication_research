@@ -61,16 +61,16 @@
 
     \textit{Adversaries:} An adversary is often defined by what action they can perform, i.e. the oracles they can query, 
     the goals of their attack(also known as the game they are playing) and by the way they can interact with a system. An adversary
-    is a p.p.t algorithm.
+    is a PPT algorithm.
     
-    A tag can be either \textit{drawn} or \textit{free}, this means that it is in reach of the 
-    adversary or not. A virtual tag is a temporary identifier for a tag when it is drawn.
+    A tag can be either \textit{drawn} or \textit{free}, this means that it is in reach or not of the 
+    adversary. A virtual tag is a temporary identifier for a tag when it is drawn.
 
     Below are the 8 oracles defined in Vaudenay's model:
 
-    1. \textit{$CreateTag^b$(ID)}: created a new tag, legitimate(b=1) or not(b=0) with the unique ID.
+    1. \textit{$CreateTag^b$(ID)}: created a new tag, legitimate(b=1) or illegitimate(b=0) with the unique ID.
         This oracles uses SetupTag(ID) and if the tag is legitimate then the reader 
-        updates it's database. The reader searches the database in order to authenticate tags.
+        updates its database. The reader searches the database in order to authenticate tags.
     
     2. \textit{DrawTag($distr) \rightarrow (vtag_1, b_1, ... , vtag_n, b_n$)}: selects at random n tags following the 
     distribution $distr$ and draws them to be used by the adversary. The oracle provides
@@ -82,12 +82,12 @@
 
     3. \textit{Free(vtag)}: the vtag is eliminated from the set the attacker works with. This makes it unreachable to the adversary.
     
-    4. \textit{Launch $-> \pi$}: the reader launches a new protocol instance $\pi$.
+    4. \textit{Launch $\rightarrow \pi$}: the reader launches a new protocol instance $\pi$.
 
-    5. \textit{SendReader($m, \pi) -> (m'$)}: sends the reader a message m and receives as response 
+    5. \textit{SendReader($m, \pi) \rightarrow (m'$)}: sends the reader a message m and receives as response 
     the message $m'$ as part of the protocol $\pi$.
 
-    6. \textit{SendTag($m, \pi) -> (m'$)}: sends the tag a message m and receives as response 
+    6. \textit{SendTag($m, \pi) \rightarrow (m'$)}: sends the tag a message m and receives as response 
     the message $m'$. If m is empty the response is the first message transmitted by the tag for
     a given protocol. 
 
@@ -124,7 +124,7 @@
     protocol are followed out of order(interleaved). If the probability of the adversary to win is 
     negligible then a RFID scheme is considered secure.
 
-    For a mutual authentication scheme the same property needs to be respected for the tag to authenticate
+    For a mutual authentication scheme the same property also needs to be respected for the tag authenticating
     the reader.
 
     \textit{Reader authentication}: The definition of reader authentication is based on a security experiment $Exp_{\mathcal{A}_{sec}}^{\mathcal{R}-aut}$
@@ -132,8 +132,8 @@
     must compute some of the protocol messages, not just forward them from $\mathcal{R}$ to $\mathcal{T}_{ID}$. $Exp_{\mathcal{A}_{sec}}^{\mathcal{R}-aut}$ = 1
     denotes that $\mathcal{A}_{sec}$ wins the security experiment.
 
-    \textbf{Definition 1}: An RFID system achieves reader authentication if for every strong adversary $\mathcal{A}_{sec}$ Pr[$Exp_{\mathcal{A}_{sec}}^{\mathcal{R}-aut}$ = 1]
-    is negligible.
+    \textbf{Definition 1}: An RFID system achieves reader authentication if for every strong adversary $\mathcal{A}_{sec}$, probability 
+    Pr[$Exp_{\mathcal{A}_{sec}}^{\mathcal{R}-aut}$ = 1] is negligible.
 
     \section{Privacy}
 
@@ -142,10 +142,10 @@
     
     The simulation aspect of the blinder catches the case of an adversary that can't use the messages transmitted, they only know how the protocol
     interacts and the actual data traffic is simulated. By contrasting this attacker with an adversary that eavesdropes, denies or changes messages
-    several conclusions can be drawn about the properties of a protocol.
+    several conclusions can be drawn about the leakage of data and the privacy of a protocol.
 
     The privacy definition can be formalized by a privacy experiment $Exp_{\mathcal{A}_{prv}}^{prv-b} = b^{'}$ defined by an adversary of class P, a
-    security parameter s and $b \in_{R}$ {0,1}. In the first phase of the experiment, the reader is initialized (using SetupReader($1^s$)). 
+    security parameter s and $b \in_{R} \{0,1\}$. In the first phase of the experiment, the reader is initialized (using SetupReader($1^s$)). 
     The public key is available to $\mathcal{A}_{prv}$ and $\mathcal{B}$. $\mathcal{A}_{prv}$ interacts with the protocol according to its constraints.
     If b = 1, all queries to Launch, SendReader, SendTag and Result oracles are handled by $\mathcal{B}$. Moreover, the blinder can surveil all the other
     oracles. In phase two, the adversary cannot call the oracles any longer but is given the hidden table $\Gamma$ of the DrawTag oracle. Finally, 
@@ -165,17 +165,22 @@
     messages. If a scheme is resistent to all P-private adversaries(belonging to P class, with all
     P specific access) then the scheme achieves P-privacy.
 
-    An adversary $\mathcal{A}$ is trivial if there is a negligible difference between the chances
+    An adversary $\mathcal{A}$ is \textit{trivial} if there is a negligible difference between the chances
     of an adversary that interacts with the system to win and the chances of a blinded adversary.
 
     All privacy notions defined in the Paise-Vaudenay Model are linked the following way:
 
     \[
-    \begin{array}{ccccccc}
+    \begin{array}{|ccccccc|}
+        \hline
         \text{Strong} & \Rightarrow & \text{Destructive} & \Rightarrow & \text{Forward} & \Rightarrow & \text{Weak} \\
         \Downarrow & &  \Downarrow  & &\Downarrow  & & \Downarrow \\
-        \text{Narrow-Strong} & \Rightarrow & \text{Narrow-Destructive} & \Rightarrow & \text{Narrow-Forward} & \Rightarrow & \text{Narrow-Weak}
+        \text{Narrow-Strong} & \Rightarrow & \text{Narrow-Destructive} & \Rightarrow & \text{Narrow-Forward} & \Rightarrow & \text{Narrow-Weak} \\
+        \hline
     \end{array}
     \]
 
-    Remark: The following relation is clear: $Weak \subseteq Forward \subseteq Destructive \subseteq Strong$
+    Remark: The following relation is clear: $Weak \subseteq Forward \subseteq Destructive \subseteq Strong$.
+
+    This means that if a particular class of privacy is proven to be impossible for a given set of parameters then the protocol can achieve 
+    a weaker class. For example if destructive privacy is unachievable then the protocol can still be narrow-destructive or forward private.
