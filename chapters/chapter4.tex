@@ -4,8 +4,7 @@
 
 \section{A protocol attack}
 
-    For the authentication proposed in \cite{BOM}, the tag stores in it's permanent memory the values: \textit{A, B, p, f(p), S, Z, $W_i$}.
-    The value $N_c$ designates the cardinality of set f(p), meaning the number of integer divisors of p.
+    For the authentication proposed in \cite{BOM}, the tag stores in it's permanent memory the values: \textit{$A, B, p, S, Z_{DBLTKM}, Z_{SUEO}, Z_{AM}$}.
     The global temporary memory will hold the value $N_t$
     used to authenticate the reader. It is generated at step 2 and held until step 10.
 
@@ -13,30 +12,34 @@
     \begin{adjustwidth}{-60pt}{}
     \procedureblock[colspace=-0.5cm]{The tag-reader side protocol: Tag memory usage}{
     \textbf{Reader} \< \< \textbf{Tag} \\[-1ex]
-    \textit{A, B, p, f(p),$N_r$, S, Z, $W_i$} \< \< \textit{ \colorbox{mygray}{A, B, p, f(p),$N_t$, S, Z, $W_i$, $N_c$}} \\[-1.5ex]
+    \textit{\footnotesize $A, B, p, S, N_r$} \< \< \textit{\footnotesize \colorbox{mygray}{$A, B, p, S, N_t$}} \\[-2ex]
+    \textit{\footnotesize $Z_{DBLTKM}, Z_{SUEO}, Z_{AM}$} \< \< \textit{\footnotesize \colorbox{mygray}{$Z_{DBLTKM}, Z_{SUEO}, Z_{AM}$}} \\[-1.5ex]
+    % \\
+    \<\sendmessageright{top=\text{ \scriptsize 1.Query}} \< \\[-4ex]
     % \\
     \< \< \text{ \scriptsize 2.Generates \colorbox{olive}{$N_t$}} \\[-1ex]
-    \< \< \text{ \scriptsize E($N_t||S$,A,p)} \\[-4ex]
+    \< \< \text{ \scriptsize E($N_t||S$, A, p)} \\[-4ex]
     % \\
-    \< \sendmessageleft{top=\text{ \scriptsize 3.E($N_t||S$,A,p)}} \< \\[-4ex]
+    \< \sendmessageleft{top=\text{ \scriptsize 3.E($N_t||S$, A, p)}} \< \\[-4ex]
     % \\
-    \text{ \scriptsize 4.D(E($N_t||S$,A,p),B,p)} \< \< \\[-1ex]
+    \text{ \scriptsize 4.D(E($N_t||S$, A, p), B, p)} \< \< \\[-1ex]
     \text{ \scriptsize Generates $N_r$} \< \< \\[-1ex]
-    \text{ \scriptsize E($N_r||S$,A,p)} \< \< \\[-1ex]
+    \text{ \scriptsize E($N_r||S$, A, p)} \< \< \\[-1ex]
     % \\
     \text{ \scriptsize ...} \< \< \\[-1ex]
     % \\
-    \text{ \scriptsize 8.D(E($N_r||S_d||S_p||S_c$,A,p),B,p)} \< \< \\[-1ex]
+    \text{ \scriptsize 8.D(E($N_r||S_d||S_p||S_c$, A, p), B, p)} \< \< \\[-1ex]
     \text{ \scriptsize E($N_t||S_d||S_p||S_c$, A, p)} \< \< \\[-4ex]
     % \\
-    \<\sendmessageright{top = \text{ \scriptsize 9.E($N_t||S_d||S_p||S_c$,A,p)}}\<\\[-4ex]
+    \<\sendmessageright{top = \text{ \scriptsize 9.E($N_t||S_d||S_p||S_c$, A, p)}}\<\\[-4ex]
     % \\
-    \< \< \text{ \scriptsize 10.D(E($N_t||S_d||S_p||S_c$,A,p),B,p)} \\[-1ex]
-    \< \< \text{ \scriptsize Calculates mod($S_d$,Z)} \\[-1ex]
-    \< \< \text{ \scriptsize Calculates mod($S_p$,$W_i$)} \\[-1ex]
-    \< \< \text{ \scriptsize Calculates mod($S_c$,$N_c$)} \\[-1ex]
+    \< \< \text{ \scriptsize 10.D(E($N_t||S_d||S_p||S_c$, A, p), B, p)} \\[-1ex]
+    \< \< \text{ \scriptsize Calculates mod($S_d, Z_{DBLTKM}$)} \\[-1ex]
+    \< \< \text{ \scriptsize Calculates mod($S_p, Z_{SUEO}$)} \\[-1ex]
+    \< \< \text{ \scriptsize Calculates mod($S_c, Z_{AM}$)} \\[-1ex]
     \< \< \text{ \scriptsize E($N_t+1||ID$,$A_{new}$,q)} \\[-4ex]
     % \\
+    \< \sendmessageleft{top=\text{ \scriptsize 11.E($N_t+1||ID$,$A_{new}$,q)}} \< \\[-4ex]
     }
     \end{adjustwidth}
 
@@ -47,7 +50,7 @@
     
     2. Adversary intercepts the response of the reader(step 9 of the protocol)to the tag: E($N_t||S_d||S_p||S_c$,A,p)
     
-    3. Having the access to the tag, the adversary corrupts the tag and gets it's internal state. By doing that the adversary now knows A, B, p, f(p), S, Z, $W_i$ and the nonce $N_t$.
+    3. Having the access to the tag, the adversary corrupts the tag and gets it's internal state. By doing that the adversary now knows $A, B, p, S, Z_{DBLTKM}, Z_{SUEO}, Z_{AM}$ and the nonce $N_t$.
     
     4. Adversary decrypts E($N_t||S_d||S_p||S_c$,A,p) using the values B and p. Now the adversary has access to $S_d, S_p, S_c$ and computes the values $A_{new}$ and q.
     
@@ -60,34 +63,37 @@
     \begin{adjustwidth}{-60pt}{}
     \procedureblock[colspace=-0.5cm]{The tag-reader side protocol: Corrupt attack}{
     \textbf{Reader} \< \< \textbf{Tag} \\[-1ex]
-    \textit{A, B, p, f(p),$N_r$, S, Z, $W_i$} \< \< \textit{A, B, p, f(p),$N_t$, S, Z, $W_i$, $N_c$} \\[-1.5ex]
+    \textit{\footnotesize $A, B, p, S, N_r$} \< \< \textit{\footnotesize $A, B, p, S, N_t$} \\[-2ex]
+    \textit{\footnotesize $Z_{DBLTKM}, Z_{SUEO}, Z_{AM}$} \< \< \textit{\footnotesize $Z_{DBLTKM}, Z_{SUEO}, Z_{AM}$} \\[-1.5ex]
     % \\
-    \< \sendmessageright{top=\text{ \scriptsize \colorbox{softred}{$A$ sends query}}} \< \\[-4ex]
+    \<\sendmessageright{top=\text{ \scriptsize \colorbox{softred}{$A$ sends query}}} \< \\[-4ex]
     % \\
     \< \< \text{ \scriptsize 2.Generates $N_t$} \\[-1ex]
-    \< \< \text{ \scriptsize E($N_t||S$,A,p)} \\[-4ex]
+    \< \< \text{ \scriptsize E($N_t||S$, A, p)} \\[-4ex]
     % \\
-    \< \sendmessageleft{top=\text{ \scriptsize 3.E($N_t||S$,A,p)}} \< \\[-4ex]
+    \< \sendmessageleft{top=\text{ \scriptsize 3.E($N_t||S$, A, p)}} \< \\[-4ex]
     % \\
-    \text{ \scriptsize 4.D(E($N_t||S$,A,p),B,p)} \< \< \\[-1ex]
+    \text{ \scriptsize 4.D(E($N_t||S$, A, p), B, p)} \< \< \\[-1ex]
     \text{ \scriptsize Generates $N_r$} \< \< \\[-1ex]
-    \text{ \scriptsize E($N_r||S$,A,p)} \< \< \\[-1ex]
+    \text{ \scriptsize E($N_r||S$, A, p)} \< \< \\[-1ex]
     % \\
     \text{ \scriptsize ...} \< \< \\[-1ex]
     % \\
-    \text{ \scriptsize 8.D(E($N_r||S_d||S_p||S_c$,A,p),B,p)} \< \< \\[-1ex]
+    \text{ \scriptsize 8.D(E($N_r||S_d||S_p||S_c$, A, p), B, p)} \< \< \\[-1ex]
     \text{ \scriptsize E($N_t||S_d||S_p||S_c$, A, p)} \< \< \\[-4ex]
     % \\
     \<\sendmessageright{top = \text{ \scriptsize \colorbox{softred}{9.E($N_t||S_d||S_p||S_c$,A,p)}}, bottom = \text{\scriptsize \colorbox{softred}{Intercepted by $A$}}}\<\\[-4ex]
     % \\
     \< \< \text{ \scriptsize \colorbox{softred}{$A$ corrupts the tag, gets B, p and $S$}} \\[-1ex]
     \< \< \text{ \scriptsize \colorbox{softred}{$A$ can decrypt and use the tag}} \\[-1ex]
-    \< \< \text{ \scriptsize 10.D(E($N_t||S_d||S_p||S_c$,A,p),B,p)} \\[-1ex]
-    \< \< \text{ \scriptsize Calculates mod($S_d$,Z)} \\[-1ex]
-    \< \< \text{ \scriptsize Calculates mod($S_p$,$W_i$)} \\[-1ex]
-    \< \< \text{ \scriptsize Calculates mod($S_c$,$N_c$)} \\[-1ex]
+    % \\
+    \< \< \text{ \scriptsize 10.D(E($N_t||S_d||S_p||S_c$, A, p), B, p)} \\[-1ex]
+    \< \< \text{ \scriptsize Calculates mod($S_d, Z_{DBLTKM}$)} \\[-1ex]
+    \< \< \text{ \scriptsize Calculates mod($S_p, Z_{SUEO}$)} \\[-1ex]
+    \< \< \text{ \scriptsize Calculates mod($S_c, Z_{AM}$)} \\[-1ex]
     \< \< \text{ \scriptsize E($N_t+1||ID$,$A_{new}$,q)} \\[-4ex]
     % \\
+    \< \sendmessageleft{top=\text{ \scriptsize 11.E($N_t+1||ID$,$A_{new}$,q)}} \< \\[-4ex]
     }
     \end{adjustwidth}
 
@@ -115,7 +121,7 @@
     a tag during the execution of the protocol, being it earlier or later in its computation.
 
     In the case of \textbf{mutual authentication}, an adversary can use the Corrupt() oracle to obtain secret $S$. By calling the CreateTag()
-    oracle and using value $S$ illegitimate tags can be authenticated by a reader. Thus tag authentication is countered.
+    oracle and using value $S$ illegitimate tags can be authenticated by a reader. Thus tag authentication is bypassed.
     For reader authentication the adversary can corrupt
     multiple tags and store combinations of matrices $A$, $B$ and modulus $p$ and with an illegitimate reader be able to succesfully
     authenticate legitimate tags. This is possible by being able to decrypt (step 4 of the protocol) and obtain nonce $N_t$ which can
@@ -152,7 +158,7 @@
     \end{tabular}
     \end{table}
 
-    These results lead to an extended discusion about security for a given RFID scheme. The \cite{BOM} scheme achieves mutual
+    These results lead to an extended discusion about security for a given RFID scheme. The \cite{BOM} scheme achieves (mutual)
     authentication between tags and reader and between reader and server. For the former, the reader authenticates the tag by
     receiving the secret value $S$ and querying it into its internal database to check its legitimacy. Reader authentication is
     achieved by decrypting the message at step 9 and receiving back value $N_t$. Only the reader should be able to decrypt 
@@ -162,30 +168,34 @@
     \begin{adjustwidth}{-60pt}{}
     \procedureblock[colspace=-0.5cm]{The tag-reader side protocol: mutual authentication}{
     \textbf{Reader} \< \< \textbf{Tag} \\[-1ex]
-    \textit{A, B, p, f(p),$N_r$, S, Z, $W_i$} \< \< \textit{A, B, p, f(p),$N_t$, S, Z, $W_i$, $N_c$} \\[-1.5ex]
+    \textit{\footnotesize $A, B, p, S, N_r$} \< \< \textit{\footnotesize $A, B, p, $\colorbox{olive}{$S$}$, N_t$} \\[-2ex]
+    \textit{\footnotesize $Z_{DBLTKM}, Z_{SUEO}, Z_{AM}$} \< \< \textit{\footnotesize $Z_{DBLTKM}, Z_{SUEO}, Z_{AM}$} \\[-1.5ex]
+    % \\
+    \<\sendmessageright{top=\text{ \scriptsize 1.Query}} \< \\[-4ex]
     % \\
     \< \< \text{ \scriptsize 2.Generates \colorbox{mygray}{$N_t$}} \\[-1ex]
-    \< \< \text{ \scriptsize E($N_t||S$,A,p)} \\[-4ex]
+    \< \< \text{ \scriptsize E($N_t||S$, A, p)} \\[-4ex]
     % \\
-    \< \sendmessageleft{top=\text{ \scriptsize 3.E($N_t||S$,A,p)}} \< \\[-4ex]
+    \< \sendmessageleft{top=\text{ \scriptsize 3.E($N_t||S$, A, p)}} \< \\[-4ex]
     % \\
-    \text{ \scriptsize 4.D(E(\colorbox{mygray}{$N_t$}$||$\colorbox{olive}{$S$},A,p),B,p)} \< \< \\[-1ex]
+    \text{ \scriptsize 4.D(E(\colorbox{mygray}{$N_t$}$||$\colorbox{olive}{$S$}, A, p), B, p)} \< \< \\[-1ex]
     \text{ \scriptsize Generates $N_r$} \< \< \\[-1ex]
-    \text{ \scriptsize E($N_r||S$,A,p)} \< \< \\[-1ex]
+    \text{ \scriptsize E($N_r||S$, A, p)} \< \< \\[-1ex]
     % \\
     \text{ \scriptsize ...} \< \< \\[-1ex]
     % \\
-    \text{ \scriptsize 8.D(E($N_r||S_d||S_p||S_c$,A,p),B,p)} \< \< \\[-1ex]
+    \text{ \scriptsize 8.D(E($N_r||S_d||S_p||S_c$, A, p), B, p)} \< \< \\[-1ex]
     \text{ \scriptsize E(\colorbox{mygray}{$N_t$}$||S_d||S_p||S_c$, A, p)} \< \< \\[-4ex]
     % \\
-    \<\sendmessageright{top = \text{ \scriptsize 9.E($N_t||S_d||S_p||S_c$,A,p)}}\<\\[-4ex]
+    \<\sendmessageright{top = \text{ \scriptsize 9.E($N_t||S_d||S_p||S_c$, A, p)}}\<\\[-4ex]
     % \\
-    \< \< \text{ \scriptsize 10.D(E(\colorbox{mygray}{$N_t$}$||S_d||S_p||S_c$,A,p),B,p)} \\[-1ex]
-    \< \< \text{ \scriptsize Calculates mod($S_d$,Z)} \\[-1ex]
-    \< \< \text{ \scriptsize Calculates mod($S_p$,$W_i$)} \\[-1ex]
-    \< \< \text{ \scriptsize Calculates mod($S_c$,$N_c$)} \\[-1ex]
+    \< \< \text{ \scriptsize 10.D(E(\colorbox{mygray}{$N_t$}$||S_d||S_p||S_c$, A, p), B, p)} \\[-1ex]
+    \< \< \text{ \scriptsize Calculates mod($S_d, Z_{DBLTKM}$)} \\[-1ex]
+    \< \< \text{ \scriptsize Calculates mod($S_p, Z_{SUEO}$)} \\[-1ex]
+    \< \< \text{ \scriptsize Calculates mod($S_c, Z_{AM}$)} \\[-1ex]
     \< \< \text{ \scriptsize E($N_t+1||ID$,$A_{new}$,q)} \\[-4ex]
     % \\
+    \< \sendmessageleft{top=\text{ \scriptsize 11.E($N_t+1||ID$,$A_{new}$,q)}} \< \\[-4ex]
     }
     \end{adjustwidth}
     
@@ -203,7 +213,7 @@
     \textbf{Theorem 2}: \textit{There is no RFID system in Vaudenay's model that achieves both reader authentication and narrow-strong privacy 
     under permanent state disclosure.}
 
-    Thus under the presumption that the Corrupt oracle yields only the permanent state the scheme can achieve at most destructive or
+    Thus under the presumption that the Corrupt oracle yields only the permanent state, the scheme can achieve at most destructive or
     narrow-destructive privacy.
 
     Resetable tags and the ability of the adversary to change the state to its initial values lead to the impossibility of narrow-weak
