@@ -144,57 +144,57 @@
 % \newgeometry{left=1cm}
 
 \begin{adjustwidth}{-70pt}{}
-\procedureblock[colspace=-0.5cm]{The two way AM-SUEO-DBLTKM-RFID authentication protocol}{
+\procedureblock[colspace=-1cm]{The two way AM-SUEO-DBLTKM-RFID authentication protocol}{
     \textbf{Server} \< \< \textbf{Reader} \< \< \textbf{Tag} \\[-1ex]
     \textit{\footnotesize $A, B, p, S$} \< \< \textit{\footnotesize $A, B, p, S, N_r$} \< \< \textit{\footnotesize $A, B, p, S, N_t$} \\[-2ex]
     \textit{\footnotesize $Z_{DBLTKM}, Z_{SUEO}, Z_{AM}$} \< \< \textit{\footnotesize $Z_{DBLTKM}, Z_{SUEO}, Z_{AM}$} \< \< \textit{\footnotesize $Z_{DBLTKM}, Z_{SUEO}, Z_{AM}$} \\[-1.5ex]
     % \\
-    \< \< \<\sendmessageright{top=\text{ \scriptsize 1.Query}} \< \\[-4ex]
+    \< \< \<\sendmessageright{top=\text{ \scriptsize 1.Query}} \< \\[-2ex]
     % \\
-    \< \< \< \< \text{ \scriptsize 2.Generates $N_t$} \\[-1ex]
-    \< \< \< \< \text{ \scriptsize E($N_t||S$, A, p)} \\[-4ex]
+    \< \< \< \< \text{ \scriptsize 2.Generates $N_t$} \\[-2ex]
+    \< \< \< \< \text{ \scriptsize E($N_t||S$, A, p)} \\[-3ex]
     % \\
     \< \< \< \sendmessageleft{top=\text{ \scriptsize 3.E($N_t||S$, A, p)}} \< \\[-4ex]
     % \\
-    \< \< \text{ \scriptsize 4.D(E($N_t||S$, A, p), B, p)} \< \< \\[-1ex]
-    \< \< \text{ \scriptsize Generates $N_r$} \< \< \\[-1ex]
-    \< \< \text{ \scriptsize E($N_r||S$,A,p)} \< \< \\[-4ex]
+    \< \< \text{ \scriptsize 4.D(E($N_t||S$, A, p), B, p)} \< \< \\[-2ex]
+    \< \< \text{ \scriptsize Generates $N_r$} \< \< \\[-2ex]
+    \< \< \text{ \scriptsize E($N_r||S$,A,p)} \< \< \\[-3ex]
     % \\
     \< \sendmessageleft{top=\text{ \scriptsize 5.E($N_r||S$, A, p)}} \< \< \< \\[-4ex]
     % \\
-    \text{ \scriptsize 6.D(E($N_r||S$, A, p), B, p)} \< \< \< \< \\[-1ex]
-    \text{ \scriptsize Generates $S_d, S_p, S_c$} \< \< \< \< \\[-1ex]
+    \text{ \scriptsize 6.D(E($N_r||S$, A, p), B, p)} \< \< \< \< \\[-2ex]
+    \text{ \scriptsize Generates $S_d, S_p, S_c$} \< \< \< \< \\[-2ex]
     \text{ \scriptsize E($N_r||S_d||S_p||S_c$, A, p)} \< \< \< \< \\[-4ex]
     % \\
-    \< \sendmessageright{top = \text{ \scriptsize 7.E($N_r||S_d||S_p||S_c$, A, p)}} \< \< \< \\[-4ex]
+    \< \sendmessageright{top = \text{ \scriptsize 7.E($N_r||S_d||S_p||S_c$, A, p)}} \< \< \< \\[-2ex]
     % \\
-    \< \< \text{ \scriptsize 8.D(E($N_r||S_d||S_p||S_c$, A, p), B, p)} \< \< \\[-1ex]
+    \< \< \text{ \scriptsize 8.D(E($N_r||S_d||S_p||S_c$, A, p), B, p)} \< \< \\[-2ex]
     \< \< \text{ \scriptsize E($N_t||S_d||S_p||S_c$, A, p)} \< \< \\[-4ex]
     % \\
-    \<\<\<\sendmessageright{top = \text{ \scriptsize 9.E($N_t||S_d||S_p||S_c$, A, p)}}\<\\[-4ex]
+    \<\<\<\sendmessageright{top = \text{ \scriptsize 9.E($N_t||S_d||S_p||S_c$, A, p)}}\<\\[-2ex]
     % \\
-    \< \< \< \< \text{ \scriptsize 10.D(E($N_t||S_d||S_p||S_c$, A, p), B, p)} \\[-1ex]
-    \< \< \< \< \text{ \scriptsize Calculates mod($S_d, Z_{DBLTKM}$)} \\[-1ex]
-    \< \< \< \< \text{ \scriptsize Calculates mod($S_p, Z_{SUEO}$)} \\[-1ex]
-    \< \< \< \< \text{ \scriptsize Calculates mod($S_c, Z_{AM}$)} \\[-1ex]
-    \< \< \< \< \text{ \scriptsize E($N_t+1||ID$, $A_{new}$, q)} \\[-4ex]
+    \< \< \< \< \text{ \scriptsize 10.D(E($N_t||S_d||S_p||S_c$, A, p), B, p)} \\[-2ex]
+    \< \< \< \< \text{ \scriptsize Calculates mod($S_d, Z_{DBLTKM}$)} \\[-2ex]
+    \< \< \< \< \text{ \scriptsize Calculates mod($S_p, Z_{SUEO}$)} \\[-2ex]
+    \< \< \< \< \text{ \scriptsize Calculates mod($S_c, Z_{AM}$)} \\[-2ex]
+    \< \< \< \< \text{ \scriptsize E($N_t+1||ID$, $A_{new}$, q)} \\[-2ex]
     % \\
     \< \< \< \sendmessageleft{top=\text{ \scriptsize 11.E($N_t+1||ID$, $A_{new}$, $q$)}} \< \\[-2ex]
     % \\
-    \< \< \text{ \scriptsize 12.Calculates mod($S_d, Z_{DBLTKM}$)} \< \<\\[-1ex]
-    \< \< \text{ \scriptsize Calculates mod($S_p, Z_{SUEO}$)} \< \<\\[-1ex]
-    \< \< \text{ \scriptsize Calculates mod($S_c, Z_{AM}$)} \< \<\\[-1ex]
-    \< \< \text{ \scriptsize D(E($N_t+1||ID$,$A_{new}$,$q$), $B_{new}$, $q$)} \< \<\\[-1ex]
-    \< \< \text{ \scriptsize E($N_r+1||ID$, $A_{new}$, $q$)} \< \<\\[-4ex]
+    \< \< \text{ \scriptsize 12.Calculates mod($S_d, Z_{DBLTKM}$)} \< \<\\[-2ex]
+    \< \< \text{ \scriptsize Calculates mod($S_p, Z_{SUEO}$)} \< \<\\[-2ex]
+    \< \< \text{ \scriptsize Calculates mod($S_c, Z_{AM}$)} \< \<\\[-2ex]
+    \< \< \text{ \scriptsize D(E($N_t+1||ID$,$A_{new}$,$q$), $B_{new}$, $q$)} \< \<\\[-2ex]
+    \< \< \text{ \scriptsize E($N_r+1||ID$, $A_{new}$, $q$)} \< \<\\[-1ex]
     % \\
     \< \sendmessageleft{top=\text{ \scriptsize 13.E($N_r+1||ID$, $A_{new}$, $q$)}} \< \< \< \\[-2ex]
     % \\
-    \text{ \scriptsize 14.Calculates mod($S_d, Z_{DBLTKM}$)} \< \< \< \<\\[-1ex]
-    \text{ \scriptsize Calculates mod($S_p, Z_{SUEO}$)} \< \< \< \<\\[-1ex]
-    \text{ \scriptsize Calculates mod($S_c, Z_{AM}$)} \< \< \< \<\\[-1ex]
-    \text{ \scriptsize D(E($N_r+1||ID$, $A_{new}$, $q$),} \< \< \< \<\\[-1ex]
-    \text{ \scriptsize \ \ \ \ \ \ \ \ $B_{new}$, $q$)} \< \< \< \<\\[-1ex]
-    \text{ \scriptsize Obtains ID} \< \< \< \<\\[-4ex]
+    \text{ \scriptsize 14.Calculates mod($S_d, Z_{DBLTKM}$)} \< \< \< \<\\[-2ex]
+    \text{ \scriptsize Calculates mod($S_p, Z_{SUEO}$)} \< \< \< \<\\[-2ex]
+    \text{ \scriptsize Calculates mod($S_c, Z_{AM}$)} \< \< \< \<\\[-2ex]
+    \text{ \scriptsize D(E($N_r+1||ID$, $A_{new}$, $q$),} \< \< \< \<\\[-2ex]
+    \text{ \scriptsize \ \ \ \ \ \ \ \ $B_{new}$, $q$)} \< \< \< \<\\[-2ex]
+    \text{ \scriptsize Obtains ID} \< \< \< \<\\[-1ex]
 }
 \end{adjustwidth}
     
