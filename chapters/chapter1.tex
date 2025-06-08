@@ -154,7 +154,7 @@
     Informally, $Pr[Exp_{\mathcal{A}_{prv}}^{prv-b}]$ denotes the probability that an adversary $\mathcal{A}_{prv}$
     can guess the bit b, meaning whether they interact with the real oracles or through a blinder $\mathcal{B}$.
 
-    \textbf{Definition 2}: Let P be one of the adversary classes specified above. An RFID system is P-private if for
+    \textbf{Definition 2}: Let P be one of the adversary classes specified above. An RFID system is \textbf{P-private} if for
     every adversary $\mathcal{A}_{prv}$ of P there exists a probabilistic polynomial time algorithm $\mathcal{B}$ 
     (blinder) such that the advantage $Adv_{\mathcal{A}_{prv}}^{prv} = | Pr[Exp_{\mathcal{A}_{prv}}^{prv-0} = 1] - Pr[Exp_{\mathcal{A}_{prv}}^{prv-1} = 1] |$ 
     of $\mathcal{A}_{prv}$ is negligible. $\mathcal{B}$ simulates the oracles: Launch, SendReader, SendTag and

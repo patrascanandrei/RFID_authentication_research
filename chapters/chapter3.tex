@@ -131,7 +131,7 @@
 
     \begin{figure}[h!]
 
-    \hspace*{-1cm}
+    \hspace*{0cm}
     \begin{tikzpicture}[
         box/.style={rectangle, draw=black, thick, minimum height=1cm, minimum width=2.5cm, align=center},
         arrow/.style={-Latex, thick},
@@ -139,10 +139,10 @@
     ]
 
     % Nodes (text boxes)
-    \node[box] (A) { $A\ creates\ $\\$tag\ ID$ };
-    \node[box, right=of A] (B) { $A\ uses\ B\ to$ \\ $simulate\ the$ \\ $protocol\ until$ \\ $the\ last\ message$};
+    \node[box] (A) { $A\ draws\ $\\$tag\ ID$ };
+    \node[box, right=of A] (B) { $A\ uses\ blinder\ B$ \\ $to\ simulate\ the$ \\ $protocol\ until$ \\ $the\ last\ message$};
     \node[box, right=of B] (C) { $A\ corrupts$ \\ $the\ tag\ and$ \\ $gets\ its\ entire\ state$};
-    \node[box, right=of C] (D) { $A\ is\ able$ \\ $to\ authenticate$ \\ $illegitimate\ tag$ \\ $ID$};
+    \node[box, right=of C] (D) { $A\ is\ able$ \\ $to\ authenticate$ \\ $tag\ ID$};
 
     % Arrows
     \draw[arrow] (A) -- (B);
@@ -280,19 +280,19 @@
 
     \begin{figure}[h!]
         
-    \hspace*{-0.5cm}
+    \hspace*{2cm}
     \begin{tikzpicture}[
         box/.style={rectangle, draw=black, thick, minimum height=1cm, minimum width=2.5cm, align=center},
         arrow/.style={-Latex, thick},
-        node distance=0.5cm and 1cm
+        node distance=1cm and 1cm
     ]
 
     % Nodes (text boxes)
-    \node[box] (A) { $A\ creates\ $\\$tag\ ID$ };
-    \node[box, left=of A] (B) { $A\ corrupts$ \\ $the\ tag\ and$ \\ $gets\ its$ \\ $permanent\ state$};
-    \node[box, below left=of B] (C) { $A\ guesses\ number\ of$ \\ $protocol\ steps\ t$};
-    \node[box, below right=of C] (D) { $A\ uses\ B\ to$ \\ $simulate\ the$ \\ $protocol\ on\ the$ \\ $tag$};
-    \node[box, right=of D] (E) { $A\ is\ able\ to\ authenticate$ \\ $illegitimate\ tag\ ID$};
+    \node[box] (A) { $A\ draws\ $\\$tag\ ID$ };
+    \node[box, right=of A] (B) { $A\ corrupts$ \\ $the\ tag\ and$ \\ $gets\ its$ \\ $permanent\ state$};
+    \node[box, right=of B] (C) { $A\ guesses\ number\ of$ \\ $protocol\ steps\ t$};
+    \node[box, below=of C] (D) { $A\ uses\ blinder\ B$ \\ $to\ simulate\ the$ \\ $protocol\ on\ the$ \\ $tag$};
+    \node[box, left=of D] (E) { $A\ is\ able\ to$ \\ $authenticate\ tag\ ID$};
 
     % Arrows
     \draw[arrow] (A) -- (B);
@@ -309,7 +309,7 @@
     been motivated in particular by the use of smart cards since in specific cases they go to their initial state when disconnected from power. Subsequently
     they compute with the same randomness they already used bofore. Reset attacks are always possible when the adversary controls the environment.
 
-    In a similar fashion as before the reset capabilities are studied for the case of total state reset, permanent and temporary memory and for the case in which
+    In a similar fashion as before, the reset capabilities are studied for the case of total state reset ( permanent and temporary memory ) and for the case in which
     the reset affects only the persistent state.
 
     To cover the case of reset attacks, a new oracle is introduced: Reset(vtag) to Vaudenay's model. This oracle allows the adversary to reset the state of the vtag
@@ -320,28 +320,17 @@
 
     To demonstrate the theorem an experiment is constructed to show that a narrow-weak adversary $\mathcal{A}_{prv}$ can distinguish with a non-negligible advantage 
     between an interaction with the real oracles and one done through a blinder $\mathcal{B}$. This is shown in algorithm 5.
+    
+    The adversary is narrow-weak because the algorithm uses no Corrupt() oracle (thus a weak adversary) and calls no Result() oracle 
+    (thus a narrow adversary).
 
-    $\mathcal{A}_{prv}$ eavesdropes a complete execution of the protocol between $vtag_{0}$ and $\mathcal{R}$(lines 6-10). Let $\tau_{0}$ be the transcript of the protocol, including the messages
+    $\mathcal{A}_{prv}$ eavesdrops a complete execution of the protocol between $vtag_{0}$ and $\mathcal{R}$(lines 6-10). Let $\tau_{0}$ be the transcript of the protocol, including the messages
     sent both by the reader and the tag.
 
-    To simulate $\mathcal{R}$ adversary $\mathcal{A}_{prv}$ uses the messages of $\tau_{0}$ to simulate a new interaction with $vtag_{1}$, obtaining $\tau_{1}$. If the same tag was
-    drawn both times then $\mathcal{A}_{prv}$ expects the transcripts  to match. A blinder would not know the result of DrawTag()(line 13) and would have the guess which tag was
-    selected.
-
-    Next, the $Adv_{\mathcal{A}_{prv}}^{prv}$ is studied. For the case in which the attack uses the real oracles the reset of the tag alwats yields the same transcript a second time. 
-    The messages of the reader are the same by design of the attack and those of the tag also match because of the reset. Thus $\mathcal{A}_{prv}$ succeds with probability $1-\epsilon(l)$
-    where $\epsilon$ is a negligible function and $l$ is the security parameter. Formally:
-
-    $Pr[Exp_{\mathcal{A}_{prv}}^{prv-0} = 1] = Pr[(\Gamma[vtag_{0}] = \Gamma[vtag_{1}]) \land out] + Pr[(\Gamma[vtag_{0}] \neq \Gamma[vtag_{1}]) \land \lnot out] = 
-        \frac{1}{2}*1+\frac{1}{2}*(1-\epsilon(l)) = 1-epsilon(l)/2$.
+    To simulate $\mathcal{R}$ adversary $\mathcal{A}_{prv}$ uses the messages of $\tau_{0}$ to simulate a new interaction with a newly drawn tag, $vtag_{1}$, obtaining $\tau_{1}$. If the same tag was
+    drawn both times then $\mathcal{A}_{prv}$ expects the transcripts to match. A blinder would not know the result of DrawTag() ( line 13 ) and would have the guess which tag was
+    selected. 
     
-    For the case of the blinder, $\mathcal{B}$ can only guess the tag selected by the second DrawTag call. Thus:
-
-    $Pr[Exp_{\mathcal{A}_{prv}}^{prv-1} = 1] = Pr[(\Gamma[vtag_{0}] = \Gamma[vtag_{1}]) \land out] + Pr[(\Gamma[vtag_{0}] \neq \Gamma[vtag_{1}]) \land \lnot out] = 
-        \frac{1}{2}*\frac{1}{2}+\frac{1}{2}*frac{1}{2} = frac{1}{2}$.
-
-    The difference between the two cases leads to a non-negligible probability and therefore the privacy definition is contradicted, proving theorem 3.
-
     \begin{algorithm}[H] % -> H ca sa stea aici in document
         \centering
         \caption{$\mathcal{A}_{prv}$ against narrow-weak privacy}
@@ -374,15 +363,60 @@
         \end{algorithmic}
     \end{algorithm}
 
+    Next, the $Adv_{\mathcal{A}_{prv}}^{prv}$ is studied to determine privacy. For the case in which the attack uses the real oracles the reset of the tag always yields the same transcript a second time. 
+    The messages of the reader are the same by design of the attack and those of the tag also match because of the reset. Thus $\mathcal{A}_{prv}$ succeds with probability $1-\epsilon(l)$
+    where $\epsilon$ is a negligible function and $l$ is the security parameter. Formally:
+
+    $Pr[Exp_{\mathcal{A}_{prv}}^{prv-0} = 1] = Pr[(\Gamma[vtag_{0}] = \Gamma[vtag_{1}]) \land out] + Pr[(\Gamma[vtag_{0}] \neq \Gamma[vtag_{1}]) \land \lnot out] = 
+        \frac{1}{2}*1+\frac{1}{2}*(1-\epsilon(l)) = 1-epsilon(l)/2$.
+    
+    For the case of the blinder, $\mathcal{B}$ can only guess the tag selected by the second DrawTag call. Thus output $out$ can only be $\frac{1}{2}.$ The probability becomes:
+
+    $Pr[Exp_{\mathcal{A}_{prv}}^{prv-1} = 1] = Pr[(\Gamma[vtag_{0}] = \Gamma[vtag_{1}]) \land out] + Pr[(\Gamma[vtag_{0}] \neq \Gamma[vtag_{1}]) \land \lnot out] = 
+        \frac{1}{2}*\frac{1}{2}+\frac{1}{2}*\frac{1}{2} = \frac{1}{2}$.
+
+    The difference between the two cases leads to a non-negligible probability and therefore the privacy definition is contradicted, proving theorem 3: against an adversary that is allowed to call the 
+    Reset oracle no privacy can be achieved in Vaudenay's model.
+
+    \begin{figure}[h!]
+    \hspace*{-0cm}
+    \begin{tikzpicture}[
+        box/.style={rectangle, draw=black, thick, minimum height=1cm, minimum width=2.5cm, align=center},
+        arrow/.style={-Latex, thick},
+        node distance=1cm and 2cm
+    ]
+
+    % Nodes (text boxes)
+    \node[box] (A) { $A\ creates\ two$ \\ $tags\ ID0\ and\ ID1$ };
+    \node[box, right=of A] (B) { $A\ draws\ one\ tag$ \\ $at\ random\ and$ \\ $eavesdrops\ a$ \\ $complete\ run\ of\ the$ \\ $protocol$};
+    \node[box, right=of B] (C) { $A\ resets\ and\ frees$ \\ $the\ tag$};
+    \node[box, below=of C] (D) { $A\ draws\ one\ of\ the$ \\ $tags\ at\ random\ and$ \\ $simulates\ a$ \\ $complete\ run\ of\ the$ \\ $protocol$};
+    \node[box, left=of D] (E) { $The\ two\ transcripts$ \\ $are\ compared,$ \\ $giving\ an\ output$};
+    \node[box, left=of E] (F) { $The\ output\ is$ \\ $compared\ to$ \\ $the\ selection\ of$ \\ $the\ tags$};
+
+    % Arrows
+    \draw[arrow] (A) -- (B);
+    \draw[arrow] (B) -- (C);
+    \draw[arrow] (C) -- (D);
+    \draw[arrow] (D) -- (E);
+    \draw[arrow] (E) -- (F);
+    \end{tikzpicture}
+    \caption{Resettable state experiment}
+    \end{figure}
+
+    This experiment highlights how the Reset() oracle makes it possible to link tags. If a tag is reset then its default values and randomness
+    will yield the same output, making it possible to link it to a particular tag. Even a narrow-weak adversary can use this to break privacy.
+
 \section{The impossibility results for stateless tags}
 
-    This section covers the results for stateless tags, meaning tags that cannot update their persistent state. This will lead to the conclusion that destructive privacy
-    is not possible in Vaudenay's model using such tags.
+    This section covers the results for stateless tags, meaning tags that cannot update their persistent state. The less restrictive definition of this is that
+    the adversary can reset only the permanent state thus making the tags use the same state multiple times. This property will lead to the 
+    impossibility of destructive privacy in Vaudenay's model using such tags. 
 
     In a stateless RFID scheme the Free(vtag) oracle erases any temporary information stored on the tag. Thus the scheme will make use of tags that have the same
     persistent state throughout the protocol and the temporary memory is used only when comunicating with a reader, when the tag is powered by it.
 
-    Algorithm 6 presents how an adversary would interact with a scheme using stateless tags.
+    Algorithm 6 presents how an adversary would interact with a scheme using stateless tags with temporary memory.
 
     \begin{algorithm}[H] % -> H ca sa stea aici in document
         \centering
@@ -390,7 +424,7 @@
         \begin{algorithmic}[1] % 1 -> line numbers
             \State CreateTag(ID)
             \State $vtag \leftarrow$ DrawTag(ID)
-            \State Free(vtag)
+            \State Free(vtag)  \Comment{deletes the temporary state}
             \State $vtag \leftarrow$ DrawTag(ID)
             \State $t \in \{1, ..., q_t\}$
             \State $m_1 \leftarrow SendReader(-,\pi)$ 
@@ -401,30 +435,32 @@
                 \State $i \gets i+1$
             \EndWhile
             \State $S \gets$ \text{Corrupt}(vtag)
-            \If{$temporary\ state\ in\ S = empty$}
+            \If{$temporary\ state\ of\ S = empty$}
                 \State \Return 1
             \EndIf
         \end{algorithmic}
     \end{algorithm}
 
-    \cite{Impossibility_results} leaves us with the following lemma:
+    However \cite{Impossibility_results} leaves us with the following lemma:
 
     \textbf{Lemma 2}: The temporary state of tags is always empty in any stateless narrow-forward RFID scheme. 
 
-    This is justified through contradiction, it is assumed the temporary state is non-empty. The fact is a tag would use temporary 
+    This is justified through contradiction, let it be assumed the temporary state is non-empty. The outcome is that a tag would use temporary 
     variables if it would communicate with the real oracles. If the protocol would be blinded then all SendTag() calls are simulated, 
     meaning no temporary variables. An adversary would be able to distinguish between the two cases after a Corrupt() oracle query, 
-    shown in algorithm 6. This contradicts narrow-forward privacy, meaning Lemma 2 holds.
+    shown in algorithm 6. This is possible by guessing for the former case with non-negligible probability a protocol round where the
+    tag uses temporary variables. This contradicts narrow-forward privacy, meaning Lemma 2 holds.
 
     Lemma 2 formally means: $(S^{\mathcal{T}_{ID}}, \cdot) \gets \mathcal{T}_{ID}^i(S^{\mathcal{T}_{ID}}, \cdot)$. Thus the scheme will 
-    work with a fixed persistent state and an empty temporary state in order to reach higher than weak privacy.
+    work with a fixed persistent state and an empty temporary state.
     
     \textbf{Theorem 4}: \textit{There is no stateless RFID scheme that achieves destructive privacy.}
     
     Destructive privacy implies forward privacy so both must be true for a scheme at the same time. For our stateless scheme it is proved in the following
     that is not the case. The proof is by contradiction so we start with the presumption of privacy and arrive at a conclusion that is false.
 
-    A destructive privacy scheme implies the existence of a blinder $\mathcal{B}$ that can distinguish between the real oracles and their simulation.
+    A destructive privacy scheme implies the existence of a blinder $\mathcal{B}$ such that an adversary can not distinguish between the real oracles and 
+    their simulation.
     Using this blinder, $\mathcal{B}_D$, a narrow-forward adversary $\mathcal{A}_{prv}^{\mathcal{B}_D}$ can be constructed. This adversary will be 
     able to thwart forward privacy, hence the contradiction.
 
