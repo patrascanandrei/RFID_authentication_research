@@ -407,6 +407,32 @@
     This experiment highlights how the Reset() oracle makes it possible to link tags. If a tag is reset then its default values and randomness
     will yield the same output, making it possible to link it to a particular tag. Even a narrow-weak adversary can use this to break privacy.
 
+    The following scheme shows how privacy is attacked for resettable tags:
+
+    \begin{figure}[h!]
+    \hspace*{0.5cm}
+    \begin{tikzpicture}[
+        box/.style={rectangle, draw=black, thick, minimum height=1cm, minimum width=2.5cm, align=center},
+        arrow/.style={-Latex, thick},
+        node distance=0.3cm and 0.5cm
+    ]
+
+    % Nodes (text boxes)
+    \node[box] (A) { $A\ resets \ tag\ ID$ };
+    \node[box, right=of A] (B) { $A\ eavesdrops\ a$ \\ $complete\ run$ \\ $of\ the\ protocol$};
+    \node[box, right=of B] (C) { $A\ gets\ transcript\ \tau_{ID}$};
+    \node[box, right=of C] (D) { $A\ links\ \tau_{ID}$ \\ $with\ tag\ ID$};
+
+    % Arrows
+    \draw[arrow] (A) -- (B);
+    \draw[arrow] (B) -- (C);
+    \draw[arrow] (C) -- (D);
+
+
+    \end{tikzpicture}
+    \caption{Resettable tag privacy attack}
+    \end{figure}
+
 \section{The impossibility results for stateless tags}
 
     This section covers the results for stateless tags, meaning tags that cannot update their persistent state. The less restrictive definition of this is that
@@ -510,7 +536,7 @@
     corrupts $\mathcal{T}$ and gets its state. Even though the adversary is destructive, they can compute the remaining tag steps of the protocol using the 
     obtained state and the protocol algorithm. $\mathcal{A}_{prv}$ also picks a state at random, with the same distribution as creating a new tag. 
     Then it picks randomly from the two states and continues the protocol until the end. When the randomly selected state is the one obtained by the 
-    Corrupt oracle, due to correctness the Result() query will yield 1 and for the other case the reader will reject it.
+    Corrupt() oracle, due to correctness the Result() query will yield 1 and for the other case the reader will reject it.
 
     Algorithm 7 shows that there is an adversary that can distinguish if a tag has changed its state or not.
 
@@ -522,6 +548,13 @@
     Next, it is shown how a narrow-forward adversary can use $\mathcal{B}_D$ to distinguish between the blinder $\mathcal{B}$ and the real oracles. This disproves 
     narrow-forward privacy and in turn destructive privacy. $\mathcal{A}_{prv}$ uses the capabilities of $\mathcal{B}_D$ by feeding it information similarly to 
     algorithm 7. This is described in the following, algorithm 8. 
+
+    The adversary makes $\mathcal{B}_D$ to compute the first $j_{\mathcal{R}}$ rounds of the protocol(8-12). After, $\mathcal{A}_{prv}^{\mathcal{B}_D}$ queries the 
+    SendTag() oracle with message $m_{2j_{\mathcal{R}}-1}$ given by $\mathcal{B}_D$. This is the tag side of the protocol for step $j_{\mathcal{R}}$. Next the adversary
+    frees $vtag_{0}$ and draws a new tag: $vtag_{1}$. Steps 13-15 are not shown to $\mathcal{B}_D$. Next $\mathcal{A}_{prv}^{\mathcal{B}_D}$ obtains the state of
+    the new tag $vtag_{1}$ by corrupting it. This is shown to $\mathcal{B}_D$. $\mathcal{A}_{prv}^{\mathcal{B}_D}$ sends $\mathcal{B}_D$ the message $m_{2j_{\mathcal{R}}}$ 
+    (line 13). This message has been computed either with the real oracles or via blinder $\mathcal{B}$. $\mathcal{B}_D$ expects this message to be the product of the Corrupt()
+    oracle(line 12, algorithm 7).
 
     \begin{algorithm}[H] % -> H ca sa stea aici in document
         \centering
@@ -540,7 +573,7 @@
                 \State $m_{2i+1} \gets SendReader(m_{2i}, \pi)$  \Comment{simulated by $\mathcal{B}_D \rightarrow 10$}
                 \State $i \gets i+1$
             \EndWhile
-            \State $m_{2j_{\mathcal{R}}} \gets SendTag(m_{2j_{\mathcal{R}}-1}, vtag_{0})$ \Comment{computed\ by\ $vtag_{0}\ with\ real\ oracles\ or\ blinder$}
+            \State $m_{2j_{\mathcal{R}}} \gets SendTag(m_{2j_{\mathcal{R}}-1}, vtag_{0})$ \Comment{computed\ by\ $vtag_{0}\ with\ real\ oracle\ or\ blinder$}
             \State $Free(vtag_{0})$
             \State $vtag_{1} \leftarrow$ DrawTag($ID_k, Pr(k)= 1/2, k \in \{0,1\}$)
             \State $\mathcal{S}^{\mathcal{T}_{ID}} \gets Corrupt(vtag_{1})$  \Comment{shown to $\mathcal{B}_D \rightarrow 13$}
@@ -556,15 +589,83 @@
         \end{algorithmic}
     \end{algorithm}
 
-    The adversary makes $\mathcal{B}_D$ to compute the first $j_{\mathcal{R}}$ rounds of the protocol(8-12). After, $\mathcal{A}_{prv}^{\mathcal{B}_D}$ queries the 
-    SendTag() oracle with message $m_{2j_{\mathcal{R}}-1}$ given by $\mathcal{B}_D$. This is the tag side of the protocol for step $j_{\mathcal{R}}$. Next the adversary
-    frees $vtag_{0}$ and draws a new tag: $vtag_{1}$. Steps 13-15 are not shown to $\mathcal{B}_D$. Next $\mathcal{A}_{prv}^{\mathcal{B}_D}$ obtains the state of
-    the new tag $vtag_{1}$ by corrupting it. This is shown to $\mathcal{B}_D$. $\mathcal{A}_{prv}^{\mathcal{B}_D}$ sends $\mathcal{B}_D$ the message $m_{2j_{\mathcal{R}}}$ 
-    (line 13). This message has been computed either with the real oracles or via blinder $\mathcal{B}$. $\mathcal{B}_D$ expects this message to be the product of the Corrupt()
-    oracle(line 12, algorithm 7).
-
     Until now the algorithm has computed $j_{\mathcal{R}}$ steps with a tag and 2 options discerned themselves, to continue with the original tag or choose another. The selected 
-    tag will be subjected to the experiment done by $\mathcal{B}_D$. 
+    tag will be subjected to the evaluation done by $\mathcal{B}_D$. 
+
+    Scheme 3.4 presents the interaction between $\mathcal{A}_{prv}^{\mathcal{B}_D}$ and the blinder $\mathcal{B}_D$.
+
+    \begin{figure}[h!]
+    \hspace*{-1.2cm}
+    \begin{tikzpicture}[
+        box/.style={rectangle, draw=black, thick, minimum height=1cm, minimum width=2.5cm, align=center},
+        arrow/.style={-Latex, thick},
+        node distance=0.3cm and 0.5cm
+    ]
+    
+    % Nodes (text boxes)
+    \node[box] (A) { $A\ creates\ two$ \\ $tags\ ID_0\ and\ ID_1$ };
+    \node[box, below=of A] (B) { $A\ draws\ one\ tag$ \\ $at\ random:\ vtag_0$};
+    \node[box, below=of B] (C) { $A\ executes\ j_R\ steps$ \\ $of\ the\ protocol$ \\ $with\ \mathcal{B}_D$};
+    \node[box, below left=of C] (D) { $A\ obtains\ the\ last\ m_{2j_R}$ \\ $message\ from\ vtag_0$ \\ $with\ the\ \textbf{real oracle}$};
+    \node[box, below right=of C] (E) { $A\ obtains\ the\ last\ m_{2j_R}$ \\ $message\ from\ vtag_0$ \\ $with\ the\ \textbf{blinder}$};
+    \node[box, below=of D] (F) { $A\ frees\ vtag_0$};
+    \node[box, below=of E] (G) { $A\ frees\ vtag_0$};
+    \node[box, below=of F] (H) { $ID_0\ or\ ID_1$ \\ $will\ be\ selected$};
+    \node[box, below=of G] (I) { $ID_0\ or\ ID_1$ \\ $will\ be\ selected$};
+    \node[box, below =of H, xshift=-2cm] (J) { $A\ draws\ vtag_1$ \\ $\Gamma(vtag_0)=\Gamma(vtag_1)$};
+    \node[box, below =of H, xshift= 2cm] (K) { $A\ draws\ vtag_1$ \\ $\Gamma(vtag_0) \neq \Gamma(vtag_1)$};
+    \node[box, below =of I, xshift=-2cm] (L) { $A\ draws\ vtag_1$ \\ $\Gamma(vtag_0)=\Gamma(vtag_1)$};
+    \node[box, below =of I, xshift= 2cm] (M) { $A\ draws\ vtag_1$ \\ $\Gamma(vtag_0) \neq \Gamma(vtag_1)$};
+    \node[box, below =of J] (N) {$A\ corrupts\ and$ \\ $gets\ state\ S^{T_{ID}}$};
+    \node[box, below =of K] (O) {$A\ corrupts\ and$ \\ $gets\ state\ S^{T_{ID}}$};
+    \node[box, below =of L] (P) {$A\ corrupts\ and$ \\ $gets\ state\ S^{T_{ID}}$};
+    \node[box, below =of M] (Q) {$A\ corrupts\ and$ \\ $gets\ state\ S^{T_{ID}}$};
+    \node[box, below =of N] (R) {$m_{2j_R}\ is\ sent$ \\ $to\ blinder\ \mathcal{B}_D$};
+    \node[box, below =of O] (S) {$m_{2j_R}\ is\ sent$ \\ $to\ blinder\ \mathcal{B}_D$};
+    \node[box, below =of P] (T) {$m_{2j_R}\ is\ sent$ \\ $to\ blinder\ \mathcal{B}_D$};
+    \node[box, below =of Q] (U) {$m_{2j_R}\ is\ sent$ \\ $to\ blinder\ \mathcal{B}_D$};
+    \node[box, below =of R] (rest_1) {$A\ executes\ the$ \\ $rest\ of\ the\ protocol$ \\ $and\ gets\ the\ result$ \\ $of\ blinder\ \mathcal{B}_D$};
+    \node[box, below =of S] (rest_2) {$A\ executes\ the$ \\ $rest\ of\ the\ protocol$ \\ $and\ gets\ the\ result$ \\ $of\ blinder\ \mathcal{B}_D$};
+    \node[box, below =of T] (rest_3) {$A\ executes\ the$ \\ $rest\ of\ the\ protocol$ \\ $and\ gets\ the\ result$ \\ $of\ blinder\ \mathcal{B}_D$};
+    \node[box, below =of U] (rest_4) {$A\ executes\ the$ \\ $rest\ of\ the\ protocol$ \\ $and\ gets\ the\ result$ \\ $of\ blinder\ \mathcal{B}_D$};
+    \node[box, below =of rest_1] (result_1) {$A\ gets\ result$ \\ $with\ probability$ \\ $ \approx 1$};
+    \node[box, below =of rest_2] (result_2) {$A\ gets\ result$ \\ $with\ probability$ \\ $p$};
+    \node[box, below =of rest_3] (result_3) {$A\ gets\ result$ \\ $with\ probability$ \\ $1-p$};
+    \node[box, below =of rest_4] (result_4) {$A\ gets\ result$ \\ $with\ probability$ \\ $p$};
+
+    % Arrows
+    \draw[arrow] (A) -- (B);
+    \draw[arrow] (B) -- (C);
+    \draw[arrow] (C) -- (D);
+    \draw[arrow] (C) -- (E);
+    \draw[arrow] (D) -- (F);
+    \draw[arrow] (E) -- (G);
+    \draw[arrow] (F) -- (H);
+    \draw[arrow] (G) -- (I);
+    \draw[arrow] (H) -- (J);
+    \draw[arrow] (H) -- (K);
+    \draw[arrow] (I) -- (L);
+    \draw[arrow] (I) -- (M);
+    \draw[arrow] (J) -- (N);
+    \draw[arrow] (K) -- (O);
+    \draw[arrow] (L) -- (P);
+    \draw[arrow] (M) -- (Q);
+    \draw[arrow] (N) -- (R);
+    \draw[arrow] (O) -- (S);
+    \draw[arrow] (P) -- (T);
+    \draw[arrow] (Q) -- (U);
+    \draw[arrow] (R) -- (rest_1);
+    \draw[arrow] (S) -- (rest_2);
+    \draw[arrow] (T) -- (rest_3);
+    \draw[arrow] (U) -- (rest_4);
+    \draw[arrow] (rest_1) -- (result_1);
+    \draw[arrow] (rest_2) -- (result_2);
+    \draw[arrow] (rest_3) -- (result_3);
+    \draw[arrow] (rest_4) -- (result_4);
+
+    \end{tikzpicture}
+    \caption{Stateless tags experiment}
+    \end{figure}
 
     After the protocol enters phase 2 of $\mathcal{B}_D$, it plays the reader side until the end. By hypothesis $\mathcal{B}_D$ can distinguish if the messages received in the second
     phase match the behaviour of the tag from the first phase, in which case Result() will output 1 or not, and Result() will output 0. 
@@ -582,11 +683,16 @@
     +\frac{1}{2}*p \leq \frac{(1+p)}{2}.$
 
     Next, we study the case where $\mathcal{A}_{prv}$ interacts with a blinder $\mathcal{B}$. For the both cases: $\Gamma(vtag_0) = \Gamma(vtag_1)$ and 
-    $\Gamma(vtag_0) \neq \Gamma(vtag_1)$ the output of the SendTag() query computed by $\mathcal{B}_D$ is by way of a random state that is
+    $\Gamma(vtag_0) \neq \Gamma(vtag_1)$ the output of the SendTag() query computed by $\mathcal{B}_D$ is by way of a \underline{random} state that is
     with overwhelming probability different from $vtag_0$ or $vtag_1$. Thus in both cases $j_\mathcal{R}$ messages are computed with a random 
     state different than $\mathcal{S}^{\mathcal{T}_{ID}}$ and the rest computed by an arbitrary state $\mathcal{S}^{\mathcal{T}_{ID}}$. Therefore 
     $Pr[Exp_{\mathcal{A}_{prv}^{\mathcal{B}_D}}^{prv-1} = 1] = \frac{1}{2}*(1-p)+\frac{1}{2}*p = \frac{(1-p)}{2}+\frac{p}{2} = \frac{1}{2}.$
     What follows is that $Adv_{\mathcal{A}_{prv}^{\mathcal{B}_D}}^{prv} \leq | \frac{(1+p)}{2} - \frac{1}{2} | = \frac{p}{2}$. Given the way in 
     which probability p is defined and the fact that $\mathcal{B}_D$ is able to distinguish if a state changed through a protocol instance then
     p is non-negligible and so is $Adv_{\mathcal{A}_{prv}^{\mathcal{B}_D}}^{prv}$, concluding the proof. 
+
+    An adversary can feed the blinder against destructive privacy $\mathcal{B}_D$ in such a way that the results of the experiment with stateless tags
+    are produced by different distributions. These probabilities mean a difference between real and random states, thus making possible to draw non-trivial 
+    relations between tags. This is a breach of privacy.
+
     
