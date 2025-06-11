@@ -51,7 +51,15 @@
     \textit{Step 3.} The construction of $\mathcal{A}_{sec}^{\mathcal{B}}$ is shown in Algorithm 1 and the win condition for $\mathcal{A}_{sec}^{\mathcal{B}}$
     is established (Eq. 1 to be non-negligible). 
 
-    The construction for a blinded adversary against reader authentication is:
+    The construction for a blinded adversary against reader authentication is presented in algorithm 1.
+
+    $\mathcal{A}_{sec}^{\mathcal{B}}$ uses the blinder as a black box to simulate the messages between the reader and the tag.
+    $\mathcal{A}_{sec}$ succeds if $\mathcal{T}_{ID}$ accepts $\mathcal{B}$ as reader $\mathcal{R}$. Formally:
+
+    $Pr[Exp_{\mathcal{A}_{sec}^{B}}^{\mathcal{R}-aut} = 1] = Pr[Ident[\mathcal{T}_{ID}:S_0^{\mathcal{T}_{ID}}; \mathcal{A}_{sec}^{\mathcal{B}}:-; *:pk_{R}]
+    \rightarrow [\mathcal{T}_{ID}:real; \mathcal{A}_{sec}^{\mathcal{B}}:.]]$ (Equation 1) where $S_0^{\mathcal{T}_{ID}}$ denotes the initial tag state.
+    
+
     \begin{algorithm}[H] % -> H ca sa stea aici in document
         \centering
         \caption{Adversary $\mathcal{A}_{sec}^{\mathcal{B}}$ against reader authentication}
@@ -70,11 +78,6 @@
         \end{algorithmic}
     \end{algorithm}
 
-    $\mathcal{A}_{sec}^{\mathcal{B}}$ uses the blinder as a black box to simulate the messages between the reader and the tag.
-    $\mathcal{A}_{sec}$ succeds if $\mathcal{T}_{ID}$ accepts $\mathcal{B}$ as reader $\mathcal{R}$. Formally:
-
-    $Pr[Exp_{\mathcal{A}_{sec}^{B}}^{\mathcal{R}-aut} = 1] = Pr[Ident[\mathcal{T}_{ID}:S_0^{\mathcal{T}_{ID}}; \mathcal{A}_{sec}^{\mathcal{B}}:-; *:pk_{R}]
-    \rightarrow [\mathcal{T}_{ID}:real; \mathcal{A}_{sec}^{\mathcal{B}}:.]]$ (Equation 1) where $S_0^{\mathcal{T}_{ID}}$ denotes the initial tag state.
     
     \textit{Step 4.} A proof that $\mathcal{A}_{sec}^{\mathcal{B}}$ has non-negligible odds to win the security game i.e. Eq. 1 is non-negligible.
     This is a proof by contradiction as well. Equation 1 being negligible means a non-negligible $p_{\bot}$ that $out_{\mathcal{T}_{ID}} = \bot$.
@@ -86,6 +89,8 @@
     performs the computation $\mathcal{T}_{ID}$ would have done for $m_{final}$. A result of $out_{\mathcal{T}_{ID}} = real$ denotes that the protocol interacted
     with the real oracles(and the algorithm returns 0), otherwise the calls were made through $\mathcal{B}$(and the algorithm returns 1).
 
+    $\mathcal{A}_{prv}$ is a narrow-forward adversary because during the experiment there were no Result($\pi$) calls and once a Corrupt(vtag) was called 
+    no other oracle was queried.
 
     \begin{algorithm}[H] % -> H ca sa stea aici in document
         \centering
@@ -111,9 +116,6 @@
         \end{algorithmic}
     \end{algorithm}
 
-    $\mathcal{A}_{prv}$ is a narrow-forward adversary because during the experiment there were no Result($\pi$) calls and once a Corrupt(vtag) was called 
-    no other oracle was queried.
-
     What remains is to assess the odds of $\mathcal{A}_{prv}$ discerning between real/simulated oracles.
 
     Firstly, for the case in which the adversary interacts with the real system/oracles, it follows from correctness that probability $p_{real}$ of 
@@ -130,7 +132,7 @@
 
     Below is shown how the adversary uses the blinder defined by narrow-forward privacy.
 
-    \begin{figure}[h!]
+    \begin{figure}[H]
 
     \hspace*{0cm}
     \begin{tikzpicture}[
@@ -279,7 +281,7 @@
 
     Below is shown how the adversary uses the blinder defined by narrow-strong privacy.
 
-    \begin{figure}[h!]
+    \begin{figure}[H]
         
     \hspace*{2cm}
     \begin{tikzpicture}[
@@ -381,7 +383,7 @@
     The difference between the two cases leads to a non-negligible probability and therefore the privacy definition is contradicted, proving theorem 3: against an adversary that is allowed to call the 
     Reset oracle no privacy can be achieved in Vaudenay's model.
 
-    \begin{figure}[h!]
+    \begin{figure}[H]
     \hspace*{-0cm}
     \begin{tikzpicture}[
         box/.style={rectangle, draw=black, thick, minimum height=1cm, minimum width=2.5cm, align=center},
@@ -412,7 +414,7 @@
 
     The following scheme shows how privacy is attacked for resettable tags:
 
-    \begin{figure}[h!]
+    \begin{figure}[H]
     \hspace*{0.5cm}
     \begin{tikzpicture}[
         box/.style={rectangle, draw=black, thick, minimum height=1cm, minimum width=2.5cm, align=center},
@@ -548,7 +550,6 @@
         \end{algorithmic}
     \end{algorithm}
 
-    
     Next, it is shown how a narrow-forward adversary can use $\mathcal{B}_D$ to distinguish between the blinder $\mathcal{B}$ and the real oracles. This disproves 
     narrow-forward privacy and in turn destructive privacy. $\mathcal{A}_{prv}$ uses the capabilities of $\mathcal{B}_D$ by feeding it information similarly to 
     algorithm 7. This is described in the following, algorithm 8. 
@@ -622,7 +623,7 @@
 
     Scheme 3.5 presents the interaction between $\mathcal{A}_{prv}^{\mathcal{B}_D}$ and the blinder $\mathcal{B}_D$.
 
-    \begin{figure}[h!]
+    \begin{figure}[H]
     \hspace*{-1.2cm}
     \begin{tikzpicture}[
         box/.style={rectangle, draw=black, thick, minimum height=1cm, minimum width=2.5cm, align=center},
@@ -699,7 +700,7 @@
     are produced by different distributions. These probabilities mean a difference between real and random states, thus making possible to draw non-trivial 
     relations between tags. This is a breach of privacy and it is shown in figure 3.6.
 
-    \begin{figure}[h!]
+    \begin{figure}[H]
     \hspace*{-1.5cm}
     \begin{tikzpicture}[
         box/.style={rectangle, draw=black, thick, minimum height=1cm, minimum width=2.5cm, align=center},

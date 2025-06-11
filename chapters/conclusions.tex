@@ -1,21 +1,14 @@
 \chapter*{Conclusions} 
 \addcontentsline{toc}{chapter}{Conclusions}
 
-% The use of temporary variables needs to be done with great care, especially when the desired 
-% properties for a specific application are both security and privacy. 
+\section{Future directions and research}
+The Corrupt oracle has vast implications to the security and privacy of RFID schemes. We showed the results that are achievable for tags
+when the adversary can obtain the full state or just the persistent state and the properties achievable for resetable and stateless tags.
+A reasonable direction for RFID schemes is what can be realised when tamper-proof tags are used, i.e. PUFs. A PUF is a tag that irreversibly changes 
+its response if there are attempts to physically access it. Using this \cite{PUFs} has achieved a higher level of privacy then it was 
+previously achievable.
 
-% The specific application in which tags are used derive also the need for specific security properties
-% and for the case of privacy the restrictions of tags have a major role.
-
-% The need for temporary variables arose from achieving authentication and in the effort of achieving security while privacy took a secondary role.
-% However for different classes of tags and their associated capabilities are linked different classes of adversaries and thus different potential achievable privacy.
-
-% What do I want to say:
-% - there needs to be special attention payed to privacy where it is desired
-% - protocols often focus on security and privacy comes second
-% - the tags are deeply restrained devices and these constraints often define the achievable privacy
-% - we proved that even 
-
+\section{Closing remarks}
 RFID schemes have vast applications that come each with various desired properties, being for example security in the sense of resistence to impersonation attacks 
 or privacy in the sense of linking tags and location tracking. If the application requires privacy there needs to be special attention payed to information leaks
 and how an adversary with the ability to corrupt tags can thwart this property.

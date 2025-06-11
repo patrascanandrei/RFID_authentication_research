@@ -122,10 +122,7 @@
 
     In the case of \textbf{mutual authentication}, an adversary can use the Corrupt() oracle to obtain secret $S$. By calling the CreateTag()
     oracle and using value $S$ illegitimate tags can be authenticated by a reader. Thus tag authentication is bypassed.
-    For reader authentication the adversary can corrupt
-    multiple tags and store combinations of matrices $A$, $B$ and modulus $p$ and with an illegitimate reader be able to succesfully
-    authenticate legitimate tags. This is possible by being able to decrypt (step 4 of the protocol) and obtain nonce $N_t$ which can
-    be returned to the tag (step 9 of the protocol). This way of thwarting authentication is also the base for \textbf{impersonation attacks}.
+    This way of thwarting authentication is also the base for \textbf{impersonation attacks}.
     
     In the case of \textbf{location tracking} an adversary can corrupt a tag and infer relations or straight out obtain secret value $S$, meaning
     they can link it with a particular location. Strong adversaries can corrupt the tags and release them back. By sending a query(step 1
@@ -137,6 +134,66 @@
 
     The adversary can also use the sensitive information from a tag to implement a \textbf{man-in-the-middle attack}, for example the 
     interaction described in section 4.1.
+
+\section{Use of BAN logic and assuptions}
+    Burrows, Abadi and Needham developed a logic that can be used for analysing authentication protocols. The BAN logic makes it possible
+    to formalise cryptographic protocols into structures usable in proofs. The basis of the logic is the belief of one party in the truth
+    of a formula. 
+
+    It should be noted that BAN logic has limitations. It is used for reasoning for cryptographic protocols however an analysis using this
+    logic does not necessarily mean that no attacks are possible. BAN logic yields good proofs of correctness based on a set of assuptions.
+
+    \newcommand{\believes}{\mid\equiv}
+    \newcommand{\receives}{\triangleleft}
+    \newcommand{\sends}{\mid\sim}
+    \newcommand{\controls}{\Rightarrow}
+    \newcommand{\fresh}[1]{\#(#1)}
+    \newcommand{\encrypt}[2]{\{#1\}_{#2}}
+    \newcommand{\sharesecret}[1]{\xleftrightarrow{#1}}
+
+    \begin{table}[H]
+    \centering
+    \caption{BAN logic notations}
+    \begin{tabular}{| c | c |}
+        \hline
+        Notations & Meaning \\
+        \hline
+        $P \believes X$ & P believes X \\
+        $P \receives X$ & P receives X \\
+        $P \sends X$ & P sends X \\
+        $P \controls X$ & P has juristiction over X \\
+        $ \fresh{X} $ & X is fresh \\
+        $ \encrypt{X}{k} $ & X is encrypted by the secret key k \\
+        $ P \sharesecret{k} Q $ & P and Q have a shared secret k \\
+        \hline
+    \end{tabular}
+    \end{table}
+
+    Some BAN logic rules are formed, one of them being R1 (Message-meaning rule): 
+    
+    \begin{center}
+        $ \frac{P \believes Q \sharesecret{k} P, P \receives \encrypt{X}{k}}{P \believes Q \receives X} $
+    \end{center}
+    
+    This rule states: if P believes that Q and P have a shared secret (a key for this rule) and P receives encrypted X by secret key k, then
+    P can believe Q has sent X. This rule is based on good reasoning, that the key k is only usable for sending information between P and Q 
+    and is known only by P and Q.
+
+    However taking into consideration tag corruption and the possibility of a strong adversary that can obtain the state of a tag and then
+    release it back into the environment makes the second part of R1 false. A rule that does not cover such an adversary means a BAN
+    logic demonstration that cannot correctly verify security properties.
+    
+    Tag corruption affects two of the assuptions for the BAN logic demonstration for the protocol \cite{BOM}:
+
+    \begin{center}
+        $ A3: R \believes T \controls \encrypt{N_t||S}{}\ and\ A12: T \believes R \controls \{N_t||S_d||S_p||S_c\} $
+    \end{center}
+
+    For assuption A3, a reader cannot trust a tag while a strong adversary can bypass tag authentication. In section 3.2 it is shown 
+    that a scheme cannot
+    achieve narrow-forward privacy and reader authentication. This means that narrow-forward adversary can make a tag authenticate
+    a false reader and so assuption A12 cannot be used also. If the state disclosure covers only the persistent state then the same is
+    true but for a narrow-strong adversary.
 
 \section{Achievable classes of privacy}
 
