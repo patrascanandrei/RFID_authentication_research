@@ -94,7 +94,7 @@
 
     \begin{algorithm}[H] % -> H ca sa stea aici in document
         \centering
-        \caption{$\mathcal{A}_{prv}$ against narrow-forward privacy}
+        \caption{Narrow-forward adversary $\mathcal{A}_{prv}$}
         \begin{algorithmic}[1] % 1 -> line numbers
             \State CreateTag(ID)
             \State $vtag \leftarrow$ DrawTag(ID)
@@ -130,7 +130,7 @@
     This means that the assumption at step 1 is false which means Theorem 1 is correct: there is no RFID system in Vaudenay's model that achieves both reader authentication and narrow-forward privacy 
     under temporary state disclosure.
 
-    Below is shown how the adversary uses the blinder defined by narrow-forward privacy.
+    Below is shown how the narrow-forward adversary interacts with the tag to thwart reader authentication. This is an attack on privacy.
 
     \begin{figure}[H]
 
@@ -143,9 +143,9 @@
 
     % Nodes (text boxes)
     \node[box] (A) { $A\ draws\ $\\$tag\ ID$ };
-    \node[box, right=of A] (B) { $A\ uses\ blinder\ B$ \\ $to\ simulate\ the$ \\ $protocol\ until$ \\ $the\ last\ message$};
+    \node[box, right=of A] (B) { $A\ computes\ the\ steps$ \\ $of\ the\ protocol\ until$ \\ $the\ last\ message$};
     \node[box, right=of B] (C) { $A\ corrupts$ \\ $the\ tag\ and$ \\ $gets\ its\ entire\ state$};
-    \node[box, right=of C] (D) { $A\ is\ able$ \\ $to\ authenticate$ \\ $tag\ ID$};
+    \node[box, right=of C] (D) { $A\ is\ able$ \\ $to\ authenticate$ \\ $reader\ \mathcal{R}$};
 
     % Arrows
     \draw[arrow] (A) -- (B);
@@ -247,11 +247,11 @@
         \end{algorithmic}
     \end{algorithm}
 
-    Notation: 
+    Notation is: 
 
-    $S_0^{\mathcal{T}_{ID}}$ denotes the initial(0) state S of tag $\mathcal{T}_{ID}$
+    $S_0^{\mathcal{T}_{ID}}$ denotes the initial(0) state S of tag $\mathcal{T}_{ID}$;
 
-    $q_t$ denotes the (expected) number of SendTag queries specified bt the Ident protocol
+    $q_t$ denotes the (expected) number of SendTag queries specified by the Ident protocol;
 
     $\mathcal{T}_{ID}(state, message)$ denotes the computation done by $\mathcal{T}_{ID}$ 
     when given message on specified state. 
@@ -260,7 +260,7 @@
     the adversary continued to use the tag.
 
     In this context the Corrupt(vtag) call (line 3) yields only the persistent state $S_0^{\mathcal{T}_{ID}}$ of 
-    $\mathcal{T}_{ID}$. $\mathcal{A}_{prv}$ guesses t(step 6) and simulates the tag in the Ident protocol until 
+    $\mathcal{T}_{ID}$. $\mathcal{A}_{prv}$ guesses t (step 6) and simulates the tag in the Ident protocol until 
     the reader returns $m_{final}$. $\mathcal{A}_{prv}$ performs the computation for $\mathcal{T}_{ID}$ with the last
     message m and return 0 for the case it interacted with the real oracles or 1 otherwise.
 
@@ -279,7 +279,8 @@
     \textit{Step 5.} This adversary yields $Pr[Exp_{\mathcal{A}_{sec}^{B}}^{\mathcal{R}-aut} = 1]$ non-negligible meaning that reader authentication is disproved. 
     This means that the assumption at step 1 is false which means Theorem 2 is correct. 
 
-    Below is shown how the adversary uses the blinder defined by narrow-strong privacy.
+    Below is shown how the narrow-strong adversary interacts with the tag to
+    thwart reader authentication. This is an attack on privacy.
 
     \begin{figure}[H]
         
@@ -294,8 +295,8 @@
     \node[box] (A) { $A\ draws\ $\\$tag\ ID$ };
     \node[box, right=of A] (B) { $A\ corrupts$ \\ $the\ tag\ and$ \\ $gets\ its$ \\ $permanent\ state$};
     \node[box, right=of B] (C) { $A\ guesses\ number\ of$ \\ $protocol\ steps\ t$};
-    \node[box, below=of C] (D) { $A\ uses\ blinder\ B$ \\ $to\ simulate\ the$ \\ $protocol\ on\ the$ \\ $tag$};
-    \node[box, left=of D] (E) { $A\ is\ able\ to$ \\ $authenticate\ tag\ ID$};
+    \node[box, below=of C] (D) { $A\ computes\ the\ steps$ \\ $of\ the\ protocol$ $on\ the\ tag$};
+    \node[box, left=of D] (E) { $A\ is\ able\ to$ \\ $authenticate\ reader\ \mathcal{R}$};
 
     % Arrows
     \draw[arrow] (A) -- (B);
@@ -395,7 +396,7 @@
     \node[box] (A) { $A\ creates\ two$ \\ $tags\ ID0\ and\ ID1$ };
     \node[box, right=of A] (B) { $A\ draws\ one\ tag$ \\ $at\ random\ and$ \\ $eavesdrops\ a$ \\ $complete\ run\ of\ the$ \\ $protocol$};
     \node[box, right=of B] (C) { $A\ resets\ and\ frees$ \\ $the\ tag$};
-    \node[box, below=of C] (D) { $A\ draws\ one\ of\ the$ \\ $tags\ at\ random\ and$ \\ $simulates\ a$ \\ $complete\ run\ of\ the$ \\ $protocol$};
+    \node[box, below=of C] (D) { $A\ draws\ one\ of\ the$ \\ $two\ tags\ at\ random\ and$ \\ $simulates\ a$ \\ $complete\ run\ of\ the$ \\ $protocol$};
     \node[box, left=of D] (E) { $The\ two\ transcripts$ \\ $are\ compared,$ \\ $giving\ an\ output$};
     \node[box, left=of E] (F) { $The\ output\ is$ \\ $compared\ to$ \\ $the\ selection\ of$ \\ $the\ tags$};
 
@@ -697,7 +698,7 @@
     \end{figure}
 
     An adversary can feed the blinder against destructive privacy $\mathcal{B}_D$ in such a way that the results of the experiment with stateless tags
-    are produced by different distributions. These probabilities mean a difference between real and random states, thus making possible to draw non-trivial 
+    are produced by different distributions. These probabilities point to a difference between real and random states, thus making possible to draw non-trivial 
     relations between tags. This is a breach of privacy and it is shown in figure 3.6.
 
     \begin{figure}[H]
