@@ -2,7 +2,7 @@
 \definecolor{mygray}{gray}{0.75}
 \definecolor{softred}{RGB}{255, 162, 162}
 
-\section{A protocol attack}
+\section{A tag memory usage}
 
     For the authentication proposed in \cite{BOM}, the tag stores in it's permanent memory the values: \textit{$A, B, p, S, Z_{DBLTKM}, Z_{SUEO}, Z_{AM}$}.
     The global temporary memory will hold the value $N_t$
@@ -43,59 +43,134 @@
     }
     \end{adjustwidth}
 
-    The adversary can interact with the protocol the following way:
+\section{Temporary state disclosure attack}
 
-    1. Adversary waits for a legitimate tag to respond to a reader query(step 3 of the protocol): E($N_t||S$,A,p).
+    As it was presented in section 3.2, a narrow-forward adversary can interact with a scheme the following way, given the assuption that
+    the Corrupt() oracle yields the persistent and the temporary memory is true:
+
+    1. Adversary waits for a legitimate tag to respond to a reader query (step 3 of the protocol): E($N_t||S$,A,p).
     This can be achieved by also sending a query to the tag, compeling it to compute a nonce and sending E($N_t||S$,A,p).
+
+    2. Before the tag receives the message from the reader with an encrypted nonce $N_t$ the adversary corrupts the tag, obtaining
+    its internal state. By doing that the adversary now knows $A, B, p, S, Z_{DBLTKM}, Z_{SUEO}, Z_{AM}$ and the nonce $N_t$.
     
-    2. Adversary intercepts the response of the reader(step 9 of the protocol)to the tag: E($N_t||S_d||S_p||S_c$,A,p)
-    
-    3. Having the access to the tag, the adversary corrupts the tag and gets it's internal state. By doing that the adversary now knows $A, B, p, S, Z_{DBLTKM}, Z_{SUEO}, Z_{AM}$ and the nonce $N_t$.
-    
-    4. Adversary decrypts E($N_t||S_d||S_p||S_c$,A,p) using the values B and p. Now the adversary has access to $S_d, S_p, S_c$ and computes the values $A_{new}$ and q.
-    
-    5. Using the newly obtained $A_{new}$ and q, adversary increments $N_t$, appends ID(found in the tag's memory when the corruption occured) and encrypts.
-    
-    6. Adversary sends the message to the reader whom can not descern that the tag has been tampered with.
+    3. Adversary impersonates the reader and sends an encrypted message. This message will seem legitimate to the tag because it would
+    contain the nonce $N_t$ and be encrypted by $A$ and $p$.
+
+    4. The tag receives the message, decrypts it, receives the nonce and authenticates the illegitimate reader.
 
     % aici schema pentru atacul de mai sus
 
-    \begin{adjustwidth}{-60pt}{}
-    \procedureblock[colspace=-0.5cm]{The tag-reader side protocol: Corrupt attack}{
-    \textbf{Reader} \< \< \textbf{Tag} \\[-1ex]
-    \textit{\footnotesize $A, B, p, S, N_r$} \< \< \textit{\footnotesize $A, B, p, S, N_t$} \\[-2ex]
-    \textit{\footnotesize $Z_{DBLTKM}, Z_{SUEO}, Z_{AM}$} \< \< \textit{\footnotesize $Z_{DBLTKM}, Z_{SUEO}, Z_{AM}$} \\[-1.5ex]
+    \begin{adjustwidth}{-30pt}{}
+    \procedureblock[colspace=-1cm]{The tag-reader side protocol: Temporary state disclosure attack}{
+    \textbf{Reader} \< \< \textbf{Adversary} \< \< \textbf{Tag} \\[-1ex]
+    \textit{\footnotesize $A, B, p, S, N_r$} \< \< \< \< \textit{\footnotesize $A, B, p, S, N_t$} \\[-2ex]
+    \textit{\footnotesize $Z_{DBLTKM}, Z_{SUEO}, Z_{AM}$} \< \< \< \< \textit{\footnotesize $Z_{DBLTKM}, Z_{SUEO}, Z_{AM}$} \\[-1.5ex]
     % \\
-    \<\sendmessageright{top=\text{ \scriptsize \colorbox{softred}{$A$ sends query}}} \< \\[-4ex]
+    \< \< \< \sendmessageright{top=\text{ \scriptsize \colorbox{softred}{$A$ sends query}}} \< \\[-2ex]
     % \\
-    \< \< \text{ \scriptsize 2.Generates $N_t$} \\[-1ex]
-    \< \< \text{ \scriptsize E($N_t||S$, A, p)} \\[-4ex]
+    \< \< \< \<\text{ \scriptsize 2.Generates $N_t$} \\[-1ex]
+    \< \< \< \<\text{ \scriptsize E($N_t||S$, A, p)} \\[-3ex]
     % \\
+    \< \< \< \sendmessageleft{top=\text{ \scriptsize 3.E($N_t||S$, A, p)}} \< \\[-2ex]
+    \< \< \text{ \scriptsize $\mathcal{A}$ forwards the message} \< \< \\[-2ex]
     \< \sendmessageleft{top=\text{ \scriptsize 3.E($N_t||S$, A, p)}} \< \\[-4ex]
     % \\
     \text{ \scriptsize 4.D(E($N_t||S$, A, p), B, p)} \< \< \\[-1ex]
     \text{ \scriptsize Generates $N_r$} \< \< \\[-1ex]
     \text{ \scriptsize E($N_r||S$, A, p)} \< \< \\[-1ex]
     % \\
-    \text{ \scriptsize ...} \< \< \\[-1ex]
+    \text{ \scriptsize ...} \< \< \< \< \text{ \scriptsize \colorbox{softred}{Tag is corrupted by $\mathcal{A}$}}\\[-1ex]
+    \< \< \< \sendmessageleft{top=\text{\scriptsize $A, B, p, S, N_t, Z_{AM}$}, bottom = \text{\scriptsize $Z_{DBLTKM}, Z_{SUEO}$}} \< \\[-2ex]
     % \\
-    \text{ \scriptsize 8.D(E($N_r||S_d||S_p||S_c$, A, p), B, p)} \< \< \\[-1ex]
-    \text{ \scriptsize E($N_t||S_d||S_p||S_c$, A, p)} \< \< \\[-4ex]
+    \text{ \scriptsize 8.D(E($N_r||S_d||S_p||S_c$, A, p), B, p)} \< \< \text{ \scriptsize $\mathcal{A}$ encripts $N_t$ and 3 arbitrary}\\[-1ex]
+    \text{ \scriptsize E($N_t||S_d||S_p||S_c$, A, p)}\< \< \text{ \scriptsize parameters using $A$ and $p$}\\[-1ex]
     % \\
-    \<\sendmessageright{top = \text{ \scriptsize \colorbox{softred}{9.E($N_t||S_d||S_p||S_c$,A,p)}}, bottom = \text{\scriptsize \colorbox{softred}{Intercepted by $A$}}}\<\\[-4ex]
+    \<\sendmessageright{top = \text{ \scriptsize \colorbox{softred}{9.E($N_t||S_d||S_p||S_c$,A,p)}}, bottom = \text{\scriptsize \colorbox{softred}{Stopped by $A$}}}\< \< \sendmessageright{top = \text{ \scriptsize \colorbox{softred}{E($N_t||S_0||S_1||S_2$,A,p)}}, bottom = \text{\scriptsize \colorbox{softred}{Created by $A$}}}\\[-3ex]
     % \\
-    \< \< \text{ \scriptsize \colorbox{softred}{$A$ corrupts the tag, gets B, p and $S$}} \\[-1ex]
-    \< \< \text{ \scriptsize \colorbox{softred}{$A$ can decrypt and use the tag}} \\[-1ex]
+    \< \< \< \< \text{ \scriptsize 10.D(E($N_t||S_0||S_1||S_2$, A, p), B, p)} \\[-1ex]
+    \< \< \< \< \text{ \scriptsize Stored $N_t$ = received $N_t$,} \\[-1ex]
+    \< \< \< \< \text{ \scriptsize the reader is authenticated} \\[-1ex]
     % \\
-    \< \< \text{ \scriptsize 10.D(E($N_t||S_d||S_p||S_c$, A, p), B, p)} \\[-1ex]
-    \< \< \text{ \scriptsize Calculates mod($S_d, Z_{DBLTKM}$)} \\[-1ex]
-    \< \< \text{ \scriptsize Calculates mod($S_p, Z_{SUEO}$)} \\[-1ex]
-    \< \< \text{ \scriptsize Calculates mod($S_c, Z_{AM}$)} \\[-1ex]
-    \< \< \text{ \scriptsize E($N_t+1||ID$,$A_{new}$,q)} \\[-4ex]
-    % \\
-    \< \sendmessageleft{top=\text{ \scriptsize 11.E($N_t+1||ID$,$A_{new}$,q)}} \< \\[-4ex]
     }
     \end{adjustwidth}
+
+    This attack is the equivalent of the one presented in Figure 3.2, adapted for the block-order-modulus protocol. 
+
+    This is how an adversary bypasses reader authentication, applied to a practical protocol. Making a tag
+    accept an illegitimate reader leads to the tag to disclose sensitive information. This data can be linked to the tag, breaching privacy.
+    However for this case, privacy is already broken by the ability of the adversary to corrupt the tag, thus obtaining the ID of the tag.
+    The attack emphasizes that if a protocol achieves reader authentication then that scheme cannot also achieve anything higher than weak
+    privacy because of the Corrupt() oracle.
+
+\section{Permanent state disclosure attack}
+
+    In the following is presented how an narrow-strong adversary can interact with the scheme. It is assumed that 
+    corruption of the tags yields only the persistent state. This mirrors the results in section 3.3.
+    
+    The interaction consists of:
+
+    1. The adversary corrupts the tag before it generates the temporary variables, obtaining the persistent state: 
+    $A$, $B$, $p$, $S$, $Z_{DBLTKM}$, $Z_{SUEO}$, $Z_{AM}$.
+
+    2. The adversary takes a guess at the number of protocol steps to be computed.
+
+    3. Adversary sends a query, prompting the tag to start an instance of the protocol.
+
+    4. Using the variables obtained from the Corrupt() oracle the adversary intercepts the response from the reader, is able to decrypt 
+    the message and get nonce $N_t$. 
+
+    5. The adversary impersonates the reader by encrypting the nonce and 3 arbitrary variables. The tag will receive the nonce, compare it
+    to its own and authenticate the illegitimate reader.
+
+    This attack is the equivalent of the one presented in Figure 3.3, adapted for the block-order-modulus protocol. 
+    % aici schema pentru atacul de mai sus
+
+    \begin{adjustwidth}{-30pt}{}
+    \procedureblock[colspace=-1cm]{The tag-reader side protocol: Permanent state disclosure attack}{
+    \textbf{Reader} \< \< \textbf{Adversary} \< \< \textbf{Tag} \\[-1ex]
+    \textit{\footnotesize $A, B, p, S, N_r$} \< \< \< \< \textit{\footnotesize $A, B, p, S, N_t$} \\[-2ex]
+    \textit{\footnotesize $Z_{DBLTKM}, Z_{SUEO}, Z_{AM}$} \< \< \< \< \textit{\footnotesize $Z_{DBLTKM}, Z_{SUEO}, Z_{AM}$} \\[-1.5ex]
+    % \\
+    \< \< \< \< \text{ \scriptsize \colorbox{softred}{Tag is corrupted by $\mathcal{A}$}}\\[-1ex]
+    \< \< \< \sendmessageleft{top=\text{\scriptsize $A, B, p, S, Z_{AM}$}, bottom = \text{\scriptsize $Z_{DBLTKM}, Z_{SUEO}$}} \< \\[-2ex]
+    \< \< \text{ \scriptsize $\mathcal{A}$ gets the persistent state} \\[-1ex]
+    % \\
+    \< \< \< \sendmessageright{top=\text{ \scriptsize \colorbox{softred}{$A$ sends query}}} \< \\[-2ex]
+    % \\
+    \< \< \< \<\text{ \scriptsize 2.Generates $N_t$} \\[-1ex]
+    \< \< \< \<\text{ \scriptsize E($N_t||S$, A, p)} \\[-3ex]
+    % \\
+    \< \< \< \sendmessageleft{top=\text{ \scriptsize 3.E($N_t||S$, A, p)}} \< \\[-2ex]
+    \< \< \text{ \scriptsize $\mathcal{A}$ forwards the message} \< \< \\[-2ex]
+    \< \sendmessageleft{top=\text{ \scriptsize 3.E($N_t||S$, A, p)}} \< \\[-4ex]
+    % \\
+    \text{ \scriptsize 4.D(E($N_t||S$, A, p), B, p)} \< \< \\[-1ex]
+    \text{ \scriptsize Generates $N_r$} \< \< \\[-1ex]
+    \text{ \scriptsize E($N_r||S$, A, p)} \< \< \\[-1ex]
+    % \\
+    \text{ \scriptsize ...} \\[-1ex]
+    % \\
+    \text{ \scriptsize 8.D(E($N_r||S_d||S_p||S_c$, A, p), B, p)}\\[-1ex]
+    \text{ \scriptsize E($N_t||S_d||S_p||S_c$, A, p)}\\[-1ex]
+    % \\
+    \<\sendmessageright{top = \text{ \scriptsize \colorbox{softred}{9.E($N_t||S_d||S_p||S_c$,A,p)}}, bottom = \text{\scriptsize \colorbox{softred}{Intercepted by $A$}}} \\[-3ex]
+    % \\
+    \< \< \text{ \scriptsize $\mathcal{A}$ decrypts, obtains $N_t$. It}\\[-1ex]
+    \< \< \text{ \scriptsize and 3 arbitrary parameters are}\\[-1ex]
+    \< \< \text{ \scriptsize encrypted using $A$ and $p$}\\[-2ex]
+    % \\
+    \< \< \< \sendmessageright{top = \text{ \scriptsize \colorbox{softred}{E($N_t||S_0||S_1||S_2$,A,p)}}, bottom = \text{\scriptsize \colorbox{softred}{Created by $A$}}}\\[-3ex]
+    % \\
+    \< \< \< \< \text{ \scriptsize 10.D(E($N_t||S_0||S_1||S_2$, A, p), B, p)} \\[-1ex]
+    \< \< \< \< \text{ \scriptsize Stored $N_t$ = received $N_t$,} \\[-1ex]
+    \< \< \< \< \text{ \scriptsize the reader is authenticated} \\[-1ex]
+    % \\
+    }
+    \end{adjustwidth}
+
+    The same conclusions drawn in the previous section are viable for this scheme as well. Due to the assuption of permanent state disclosure the 
+    previous attack had to be adapted such that the nonce used for authentication is obtained differently.
 
 \section{Scheme security}
 \begin{table}[H]

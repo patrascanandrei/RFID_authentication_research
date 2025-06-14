@@ -138,12 +138,12 @@
     \begin{tikzpicture}[
         box/.style={rectangle, draw=black, thick, minimum height=1cm, minimum width=2.5cm, align=center},
         arrow/.style={-Latex, thick},
-        node distance=0.5cm and 1cm
+        node distance=0.5cm and 0.5cm
     ]
 
     % Nodes (text boxes)
     \node[box] (A) { $A\ draws\ $\\$tag\ ID$ };
-    \node[box, right=of A] (B) { $A\ computes\ the\ steps$ \\ $of\ the\ protocol\ until$ \\ $the\ last\ message$};
+    \node[box, right=of A] (B) { $A\ computes/forwards$ \\ $the\ steps\ of\ the\ protocol$ \\ $until\ the\ last\ message$};
     \node[box, right=of B] (C) { $A\ corrupts$ \\ $the\ tag\ and$ \\ $gets\ its\ entire\ state$};
     \node[box, right=of C] (D) { $A\ is\ able$ \\ $to\ authenticate$ \\ $reader\ \mathcal{R}$};
 
@@ -714,7 +714,7 @@
     \node[box, right=of A] (B) { $A\ uses\ \mathcal{B}_D\ for\ an\ arbitrary$ \\ $number\ j_k\ of\ protocol$ \\ $ steps\ with\ tag\ ID$};
     \node[box, right=of B] (C) { $A\ computes\ message$ \\ $m_{2j_R}\ with\ the$ \\ $real\ oracle/state$};
     \node[box, right=of C] (D) { $A\ frees\ vtag_0$};
-    \node[box, below =of D] (E) { $A\ draws\ an$ \\ $arbitrary state$ \\ $\Gamma(vtag_0) \stackrel{?}{=}\ \Gamma(vtag_1)$};
+    \node[box, below =of D] (E) { $A\ draws\ an$ \\ $arbitrary\ state$ \\ $\Gamma(vtag_0) \stackrel{?}{=}\ \Gamma(vtag_1)$};
     \node[box, below =of E] (F) {$A\ corrupts\ and$ \\ $gets\ state\ S^{T_{ID}}$};
     \node[box, left =of F] (G) {$m_{2j_R}\ is\ sent$ \\ $to\ blinder\ \mathcal{B}_D$};
     \node[box, left =of G] (H) {$A\ executes\ the$ \\ $rest\ of\ the\ protocol$ \\ $and\ gets\ the\ result$ \\ $of\ blinder\ \mathcal{B}_D$};
