@@ -714,10 +714,10 @@
     \node[box, right=of A] (B) { $A\ uses\ \mathcal{B}_D\ for\ an\ arbitrary$ \\ $number\ j_k\ of\ protocol$ \\ $ steps\ with\ tag\ ID$};
     \node[box, right=of B] (C) { $A\ computes\ message$ \\ $m_{2j_R}\ with\ the$ \\ $real\ oracle/state$};
     \node[box, right=of C] (D) { $A\ frees\ vtag_0$};
-    \node[box, below =of D] (E) { $A\ draws\ an$ \\ $arbitrary\ state$ \\ $\Gamma(vtag_0) \stackrel{?}{=}\ \Gamma(vtag_1)$};
+    \node[box, below =of D] (E) { $A\ draws\ an$ \\ $arbitrary\ tag$ \\ $\Gamma(vtag_0) \stackrel{?}{=}\ \Gamma(vtag_1)$};
     \node[box, below =of E] (F) {$A\ corrupts\ and$ \\ $gets\ state\ S^{T_{ID}}$};
     \node[box, left =of F] (G) {$m_{2j_R}\ is\ sent$ \\ $to\ blinder\ \mathcal{B}_D$};
-    \node[box, left =of G] (H) {$A\ executes\ the$ \\ $rest\ of\ the\ protocol$ \\ $and\ gets\ the\ result$ \\ $of\ blinder\ \mathcal{B}_D$};
+    \node[box, left =of G] (H) {$A\ executes\ the\ rest$ \\ $of\ the\ protocol\ with$ \\ $S^{T_{ID}}\ and\ gets\ the$ \\ $result\ of\ blinder\ \mathcal{B}_D$};
     \node[box, left =of H] (I) {$A\ gets\ result\ with$ \\ $an\ arbitrary\ probability$};
 
     % Arrows
@@ -731,7 +731,7 @@
     \draw[arrow] (H) -- (I);
 
     \end{tikzpicture}
-    \caption{Stateless tag attack}
+    \caption{Stateless tag privacy attack}
     \end{figure}
 
     
