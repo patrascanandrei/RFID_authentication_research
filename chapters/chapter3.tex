@@ -2,11 +2,11 @@
 
 \section{Defining temporary variables}
 
-    A tag's memory can be classified in two ways: \textbf{permanent}/internal or \textbf{temporary}/volatile. The permanent memory contains the state values of the tag, while the temporary memory is
+    A tag's memory can be classified in two ways: \textbf{permanent}/persistent or \textbf{temporary}/volatile. The permanent memory contains the state values of the tag, while the temporary memory is
     composed by temporary/volatile variables used in calculations. Temporary variables can be further split into local temporary variables: used for a single step of the protocol
     and global temporary variables: used to store values for a future step of the protocol.
 
-    As the definitions imply, the global temporary variables have a longer life-time than local temporary variables. They are used to
+    As the definitions imply, the global temporary variables have a longer lifetime than local temporary variables. They are used to
     store information that is later 
     verified against received values to aid in the process of authentication. The use of them needs to be done with great care as corruption of 
     tags can occur and by that an adversary can access information that would thwart privacy.
@@ -17,7 +17,7 @@
     Under tag corruption the temporary tag state is disclosed depending on the concrete scenario. In general it is
     under one of the following cases:
 
-    1. corruption discloses \textit{the full state}: the permanent and the temporary memory (this is refered as "Temporary State Disclosure")
+    1. corruption discloses \textit{the full state}: the permanent and the temporary memory (this is referred as "Temporary State Disclosure")
 
     2. corruption discloses \textit{just the permanent state}, leaving the values in the temporary memory still a secret.
 
@@ -54,13 +54,14 @@
     The construction for a blinded adversary against reader authentication is presented in algorithm 1.
 
     $\mathcal{A}_{sec}^{\mathcal{B}}$ uses the blinder as a black box to simulate the messages between the reader and the tag.
-    $\mathcal{A}_{sec}$ succeds if $\mathcal{T}_{ID}$ accepts $\mathcal{B}$ as reader $\mathcal{R}$. Formally:
+    $\mathcal{A}_{sec}$ succeeds if $\mathcal{T}_{ID}$ accepts $\mathcal{B}$ as reader $\mathcal{R}$. Formally to break reader authentication:
 
     $Pr[Exp_{\mathcal{A}_{sec}^{B}}^{\mathcal{R}-aut} = 1] = Pr[Ident[\mathcal{T}_{ID}:S_0^{\mathcal{T}_{ID}}; \mathcal{A}_{sec}^{\mathcal{B}}:-; *:pk_{R}]
-    \rightarrow [\mathcal{T}_{ID}:real; \mathcal{A}_{sec}^{\mathcal{B}}:.]]$ (Equation 1) where $S_0^{\mathcal{T}_{ID}}$ denotes the initial tag state.
+    \rightarrow [\mathcal{T}_{ID}:real; \mathcal{A}_{sec}^{\mathcal{B}}:.]]$ (Equation 1) ($S_0^{\mathcal{T}_{ID}}$ denotes the initial tag state) needs to be
+    non-negligible.
     
 
-    \begin{algorithm}[H] % -> H ca sa stea aici in document
+    \begin{algorithm}[H] % -> H to fix in place
         \centering
         \caption{Adversary $\mathcal{A}_{sec}^{\mathcal{B}}$ against reader authentication}
         \begin{algorithmic}[1] % 1 -> line numbers
@@ -80,19 +81,19 @@
 
     
     \textit{Step 4.} A proof that $\mathcal{A}_{sec}^{\mathcal{B}}$ has non-negligible odds to win the security game i.e. Eq. 1 is non-negligible.
-    This is a proof by contradiction as well. Equation 1 being negligible means a non-negligible $p_{\bot}$ that $out_{\mathcal{T}_{ID}} = \bot$.
+    This is a proof by contradiction as well. Equation 1 being negligible (i.e. achieving reader authentication) means a non-negligible $p_{\bot}$ that $out_{\mathcal{T}_{ID}} = \bot$.
     The consequence is that $\mathcal{A}_{prv}$ has a non-negligible advantage in distinguishing the real oracles from the simulated ones, contradicting privacy.
 
     The construction of $\mathcal{A}_{prv}$ is shown in Algorithm 2.
 
     The adversary for privacy $\mathcal{A}_{prv}$ corrupts $\mathcal{T}_{ID}$ just before it receives the last message, $m_{final}$. Next, $\mathcal{A}_{prv}$
     performs the computation $\mathcal{T}_{ID}$ would have done for $m_{final}$. A result of $out_{\mathcal{T}_{ID}} = real$ denotes that the protocol interacted
-    with the real oracles(and the algorithm returns 0), otherwise the calls were made through $\mathcal{B}$(and the algorithm returns 1).
+    with the real oracles (and the algorithm returns 0), otherwise the calls were made through $\mathcal{B}$ (and the algorithm returns 1).
 
     $\mathcal{A}_{prv}$ is a narrow-forward adversary because during the experiment there were no Result($\pi$) calls and once a Corrupt(vtag) was called 
     no other oracle was queried.
 
-    \begin{algorithm}[H] % -> H ca sa stea aici in document
+    \begin{algorithm}[H] % -> H to fix in place
         \centering
         \caption{Narrow-forward adversary $\mathcal{A}_{prv}$}
         \begin{algorithmic}[1] % 1 -> line numbers
@@ -120,7 +121,7 @@
 
     Firstly, for the case in which the adversary interacts with the real system/oracles, it follows from correctness that probability $p_{real}$ of 
     $out_{\mathcal{T}_{ID}}$ is overwhelming, meaning $Pr[Exp_{\mathcal{A}_{prv}}^{prv-0} = 1] = 1-p_{real}$ is negligible. Secondly we consider the case
-    with the blinder. From the assumption $\mathcal{B}$ generates the last message such that $out_{\mathcal{T}_{ID}} = \bot$ with non-negligible probability $p_{\bot}$.
+    with the blinder. From the assumption (there is reader authentication) $\mathcal{B}$ generates the last message such that $out_{\mathcal{T}_{ID}} = \bot$ with non-negligible probability $p_{\bot}$.
     Thus $Pr[Exp_{\mathcal{A}_{prv}}^{prv-1} = 1] = p_{\bot}$ is non-negligible. It follows that $Adv_{\mathcal{A}_{prv}}^{prv} = |1-p_{real}-p_{\bot}|$ is non-negligible,
     thus a contradiction. 
 
@@ -189,7 +190,7 @@
     is established(Eq. 2 to be non-negligible).
 
     The construction for a blinded adversary against reader authentication is:
-    \begin{algorithm}[H] % -> H ca sa stea aici in document
+    \begin{algorithm}[H] % -> H to fix in place
         \centering
         \caption{Adversary $\mathcal{A}_{sec}^{\mathcal{B}}$ against reader authentication}
         \begin{algorithmic}[1] % 1 -> line numbers
@@ -208,7 +209,7 @@
         \end{algorithmic}
     \end{algorithm}
 
-    $\mathcal{A}_{sec}$ succeds if $\mathcal{T}_{ID}$ accepts $m_{final}$ and returns $out_{\mathcal{T}_{ID}} = real$.
+    $\mathcal{A}_{sec}$ succeeds if $\mathcal{T}_{ID}$ accepts $m_{final}$ and returns $out_{\mathcal{T}_{ID}} = real$.
     It means that $\mathcal{T}_{ID}$ accepts $\mathcal{B}$ as reader $\mathcal{R}$. Formally:
 
     $Pr[Exp_{\mathcal{A}_{sec}^{B}}^{\mathcal{R}-aut} = 1] = Pr[Ident[\mathcal{T}_{ID}:S_0^{\mathcal{T}_{ID}}; \mathcal{A}_{sec}^{\mathcal{B}}:-; *:pk_{R}]
@@ -221,7 +222,7 @@
 
     The construction of $\mathcal{A}_{prv}$ is shown in Algorithm 4.
     
-    \begin{algorithm}[H] % -> H ca sa stea aici in document
+    \begin{algorithm}[H] % -> H to fix in place
         \centering
         \caption{$\mathcal{A}_{prv}$ against narrow-strong privacy}
         \begin{algorithmic}[1] % 1 -> line numbers
@@ -311,7 +312,7 @@
 
     It is known that standard security notions do no longer work when the adversary can reset the internal state of the tags. Reset attacks have
     been motivated in particular by the use of smart cards since in specific cases they go to their initial state when disconnected from power. Subsequently
-    they compute with the same randomness they already used bofore. Reset attacks are always possible when the adversary controls the environment.
+    they compute with the same randomness they already used before. Reset attacks are always possible when the adversary controls the environment.
 
     In a similar fashion as before, the reset capabilities are studied for the case of total state reset ( permanent and temporary memory ) and for the case in which
     the reset affects only the persistent state.
@@ -336,7 +337,7 @@
     selected. 
     
     Next, the $Adv_{\mathcal{A}_{prv}}^{prv}$ is studied to determine privacy. For the case in which the attack uses the real oracles the reset of the tag always yields the same transcript a second time. 
-    The messages of the reader are the same by design of the attack and those of the tag also match because of the reset. Thus $\mathcal{A}_{prv}$ succeds with probability $1-\epsilon(l)$
+    The messages of the reader are the same by design of the attack and those of the tag also match because of the reset. Thus $\mathcal{A}_{prv}$ succeeds with probability $1-\epsilon(l)$
     where $\epsilon$ is a negligible function and $l$ is the security parameter.
 
     \begin{algorithm}[H] % -> H ca sa stea aici in document
@@ -446,11 +447,11 @@
     impossibility of destructive privacy in Vaudenay's model using such tags. 
 
     In a stateless RFID scheme the Free(vtag) oracle erases any temporary information stored on the tag. Thus the scheme will make use of tags that have the same
-    persistent state throughout the protocol and the temporary memory is used only when comunicating with a reader, when the tag is powered by it.
+    persistent state throughout the protocol and the temporary memory is used only when communicating with a reader, when the tag is powered by it.
 
     Algorithm 6 presents how an adversary would interact with a scheme using stateless tags with temporary memory.
 
-    \begin{algorithm}[H] % -> H ca sa stea aici in document
+    \begin{algorithm}[H]
         \centering
         \caption{$\mathcal{A}_{prv}$ against narrow-forward privacy with stateless tags}
         \begin{algorithmic}[1] % 1 -> line numbers
@@ -514,7 +515,7 @@
     and the reader for the first $j_{\mathcal{R}}$ rounds and after can simulate the reader until the protocol terminates. Two discrete phases can be observed.
     Thus $\mathcal{B}_D$ can answer Result() queries as well as the reader and by extension can distinguish if the messages have the same origin.
 
-    \begin{algorithm}[H] % -> H ca sa stea aici in document
+    \begin{algorithm}[H]
         \centering
         \caption{$\mathcal{A}_{prv}$ against destructive privacy}
         \begin{algorithmic}[1] % 1 -> line numbers
@@ -555,7 +556,7 @@
     narrow-forward privacy and in turn destructive privacy. $\mathcal{A}_{prv}$ uses the capabilities of $\mathcal{B}_D$ by feeding it information similarly to 
     algorithm 7. This is described in the following, algorithm 8. 
 
-    \begin{algorithm}[H] % -> H ca sa stea aici in document
+    \begin{algorithm}[H]
         \centering
         \caption{$\mathcal{A}_{prv}^{\mathcal{B}_D}$ against narrow-forward privacy}
         \begin{algorithmic}[1] % 1 -> line numbers
@@ -606,10 +607,10 @@
     Firstly the case in which the adversary interacts with the real oracles, i.e. uses the real SendTag() oracle (line 13 of algorithm 8). If
     $\Gamma(vtag_0) = \Gamma(vtag_1)$ then by the capabilities of $\mathcal{B}_D$ the Result query returns 1 with overwhelming probability, which
     leads to $Adv_{\mathcal{A}_{prv}^{\mathcal{B}_D}}^{prv}$ returning 1 by the same probability. Even though $\mathcal{B}_D$ receives the state
-    $\mathcal{S}^{\mathcal{T}_{ID}}$ after the first phase by the property of Lemma 2, the state is the same as in the beggining of the protocol.
+    $\mathcal{S}^{\mathcal{T}_{ID}}$ after the first phase by the property of Lemma 2, the state is the same as in the beginning of the protocol.
     If $\Gamma(vtag_0) \neq \Gamma(vtag_1)$ then the messages in the first phase were computed to the state of one vtag and the rest were computed
     to the state of a vtag identifying another tag. This is not what $\mathcal{B}_D$ expects and it could wrongly output 1. Let p be the probability
-    of $\mathcal{B}_D$ outputing 0 after $j_\mathcal{R}$ messages computed with a random state and the rest computed by an arbitrary state 
+    of $\mathcal{B}_D$ outputting 0 after $j_\mathcal{R}$ messages computed with a random state and the rest computed by an arbitrary state 
     $\mathcal{S}^{\mathcal{T}_{ID}}$. Thus $Pr[Exp_{\mathcal{A}_{prv}^{\mathcal{B}_D}}^{prv-0} = 1] = \frac{1}{2}*(1-\epsilon(l))
     +\frac{1}{2}*p \leq \frac{(1+p)}{2}.$
 
