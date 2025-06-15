@@ -304,8 +304,9 @@
     a tag during the execution of the protocol, being it earlier or later in its computation.
 
     In the case of \textbf{mutual authentication}, an adversary can use the Corrupt() oracle to obtain secret $S$. By calling the CreateTag()
-    oracle and using value $S$ illegitimate tags can be authenticated by a reader. Thus tag authentication is bypassed.
-    This way of thwarting authentication is also the base for \textbf{impersonation attacks}.
+    oracle and using value $S$ illegitimate tags can be authenticated by a reader. Thus tag authentication is bypassed. Attacks on reader 
+    authentication are presented in sections 4.2 and 4.3. These ways of thwarting authentication is also the base for 
+    \textbf{impersonation attacks}.
     
     In the case of \textbf{location tracking} an adversary can corrupt a tag and infer relations or straight out obtain secret value $S$, meaning
     they can link it with a particular location. Strong adversaries can corrupt the tags and release them back. By sending a query(step 1
@@ -354,9 +355,9 @@
 
     Some BAN logic rules are formed, one of them being R1 (Message-meaning rule): 
     
-    \begin{center}
-        $ \frac{P \believes Q \sharesecret{k} P, P \receives \encrypt{X}{k}}{P \believes Q \receives X} $
-    \end{center}
+    \[
+    \frac{P \believes Q \sharesecret{k} P, P \receives \encrypt{X}{k}}{P \believes Q \receives X}
+    \]
     
     This rule states: if P believes that Q and P have a shared secret (a key for this rule) and P receives encrypted X by secret key k, then
     P can believe Q has sent X. This rule is based on good reasoning, that the key k is only usable for sending information between P and Q 
