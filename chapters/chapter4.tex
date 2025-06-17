@@ -212,8 +212,8 @@
     largely the same, only the computations that change the state of the tag are removed. The protocol still achieves mutual authentication between its 
     three components and the server obtains the identity of the tag by the end of its completion. 
     
-    Section 3.5 presents a blinder/simulator
-    that can simulate the tag and the reader in a first phase and the reader in a second phase. This blinder was noted by $\mathcal{B}_D$ and is used
+    Section 3.5 presents a blinder/simulator that can simulate the tag and the reader in a first phase and the reader in a second phase and
+    is able to distinguish if a tag has changed its state. This blinder was noted by $\mathcal{B}_D$ and is used
     to attack a stateless tag protocol.
     
     In the following is presented how an adversary interacts with such a scheme:
@@ -224,13 +224,14 @@
 
     3. The tag used until now is freed. The adversary draws another tag, corrupts it and gets its state $S^{T_{ID}}$.
 
-    4. The message obtained at step 10 is sent to the blinder $\mathcal{B}_D$ in order for it to continue the protocol.
+    4. The message obtained at step 10 is sent to the blinder $\mathcal{B}_D$ in order for it to continue the protocol (and change the
+    distribution by which the result is formed).
 
     5. Adversary uses the state of the new tag to encrypt $N_t+1||ID$.
 
     6. The blinder $\mathcal{B}_D$ which simulates the reader outputs if it was able to decrypt the message.
 
-    \begin{adjustwidth}{-60pt}{}
+    \begin{adjustwidth}{-20pt}{}
     \procedureblock[colspace=-0.5cm]{The tag side protocol: Stateless tag privacy attack}{
     \textbf{Reader} \< \< \textbf{Tag} \\[-1ex]
     \textit{\footnotesize $A, B, p, S, N_r$} \< \< \textit{\footnotesize $A, B, p, S, N_t$} \\[-2ex]
@@ -370,7 +371,7 @@
     For assumption A3, a reader cannot trust a tag while a strong adversary can bypass tag authentication. In section 3.2 it is shown 
     that a scheme cannot
     achieve narrow-forward privacy and reader authentication. This means that narrow-forward adversary can make a tag authenticate
-    a false reader and so assumption A12 cannot be used also. If the state disclosure covers only the persistent state then the same is
+    a false reader and so assumption A12 cannot also be used. If the state disclosure covers only the persistent state then the same is
     true but for a narrow-strong adversary.
 
 \section{Achievable classes of privacy}
@@ -399,7 +400,7 @@
     achieved by decrypting the message at step 9 and receiving back value $N_t$. Only the reader should be able to decrypt 
     E($N_t||S$,A,p) (step 3) and obtain $N_t$ and be able to send it back, thus proving authenticity.
     
-    \begin{adjustwidth}{-60pt}{}
+    \begin{adjustwidth}{-40pt}{}
     \procedureblock[colspace=-0.5cm]{The tag-reader side protocol: mutual authentication}{
     \textbf{Reader} \< \< \textbf{Tag} \\[-1ex]
     \textit{\footnotesize $A, B, p, S, N_r$} \< \< \textit{\footnotesize $A, B, p, $\colorbox{olive}{$S$}$, N_t$} \\[-2ex]
@@ -433,7 +434,7 @@
     }
     \end{adjustwidth}
     
-    For tag-reader mutual authentication recall:
+    For tag-reader mutual authentication, recall:
 
     \textbf{Theorem 1}: \textit{There is no RFID system in Vaudenay's model that achieves both reader authentication and narrow-forward privacy 
     under temporary state disclosure.}
