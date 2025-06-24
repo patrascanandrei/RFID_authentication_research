@@ -9,8 +9,26 @@ a wireless technology that uses radio signals aiming to identify objects and per
 on their aircraft which would respond to queries from the base stations. This was called the Identity Friend or Foe (IFF) system, which is considered to be the
 first use of RFID.
 
-    Since then RFID technology has been applied to a number of technical and scientific fields. In medicine RFID tags are used in blood transfusion and analysis. 
-A RFID reader scans the tags attached to blood bags and finds the appropriate one for a specific patient. In the aeronautics industry, 
-RFID tags are used for the supply chain. In the automotive industry, the tags can be attached to parts of a car and tracked during assembly.
+    Since then RFID technology has been applied to a number of technical and scientific fields. In medicine RFID tags are used in blood 
+transfusion and analysis. Patients can wear a RFID tag attached to a wristband that contains information about their medical attributes. 
+A RFID reader scans the tags attached to blood bags and finds the appropriate one for a specific patient. 
+
+In the aeronautics industry, RFID tags are used for the supply chain. Boeing, for instance, tags ship crates containing aeronautical
+components. An advance report is sent to the depots regarding the contents of these tags and the information is later verified on delivery.
+
+In the automotive industry, the tags can be attached to parts of a car and tracked during assembly. Each customer has their own preferences
+for their car and RFID tags can be used to track components and avoid incorrect placements. 
+
 RFID also has many applications in the construction industry \cite{Domdouzis}, from automated tracking of pipe spools to tracking the 
-location of buried assets.
+location of buried assets. The tags can serve the purpose of identifying if a valve is the correct one, at the correct pressure and 
+in the correct location. 
+
+This work covers a mutual identification RFID scheme and studies primarily the privacy property of it. The contribution of this thesis
+consists of presenting how an adversary would interact and break privacy in a multitude of circumstances. These conditions are determined
+by the choice and capabilities of the used tags. 
+
+The structure is as follows: the first chapter presents the necessary theoretical material about RFID schemes and classes of adversaries.
+The second chapter covers the protocol to be studied. The third chapter shows how an attacker interacts with a scheme for different 
+classes of tags and provides the theoretical proofs. Lastly the forth chapter presents the case study on the attacks from chapter 3 
+for the block-order-modulus protocol, the effects on privacy and protocol development. It shows how the claimed security properties do 
+not hold in the context of tag corruption. 
