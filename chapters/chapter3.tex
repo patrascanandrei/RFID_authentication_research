@@ -1,6 +1,6 @@
 \chapter{The use of temporary variables}
 
-\section{Defining temporary variables}
+\section{Temporary variables definition}
 
     A tag's memory can be classified in two ways: \textbf{permanent}/persistent or \textbf{temporary}/volatile. The permanent memory contains the state values of the tag, while the temporary memory is
     composed by temporary/volatile variables used in calculations. Temporary variables can be further split into local temporary variables: used for a single step of the protocol
@@ -32,8 +32,8 @@
     This result is based on the following lemma:
 
     \textbf{Lemma 1}: If every narrow-forward adversary $\mathcal{A}_{prv}$ has a blinder $\mathcal{B}$ such that $Adv_{\mathcal{A}_{prv}}^{prv}$ is negligible
-    then $\mathcal{B}$ can be used for a blinded adversary $\mathcal{A}_{sec}^{\mathcal{B}}$ such that $Pr[Exp_{\mathcal{A}_{sec}^{B}}^{\mathcal{R}-aut} = 1]$ is
-    non-negligible.
+    then $\mathcal{B}$ can be used for a blinded adversary $\mathcal{A}_{sec}^{\mathcal{B}}$ such that \\
+    $Pr[Exp_{\mathcal{A}_{sec}^{B}}^{\mathcal{R}-aut} = 1]$ is non-negligible.
 
     Proof for Theorem 1: The definition of privacy requires the existence of a blinder such that there is no difference between an adversary that uses the 
     protocol messages and a blinded adversary $\mathcal{A}^{\mathcal{B}}$. This is equivalent to an adversary that cannot distinguish between $\mathcal{B}$
@@ -125,13 +125,13 @@
     Thus $Pr[Exp_{\mathcal{A}_{prv}}^{prv-1} = 1] = p_{\bot}$ is non-negligible. It follows that $Adv_{\mathcal{A}_{prv}}^{prv} = |1-p_{real}-p_{\bot}|$ is non-negligible,
     thus a contradiction. 
 
-    The contradiction means that the assuption was incorrect and $\mathcal{A}_{sec}^{\mathcal{B}}$ has non-negligible odds to win the security game.
+    The contradiction means that the assumption was incorrect and $\mathcal{A}_{sec}^{\mathcal{B}}$ has non-negligible odds to win the security game.
 
     \textit{Step 5.} This adversary yields $Pr[Exp_{\mathcal{A}_{sec}^{B}}^{\mathcal{R}-aut} = 1]$ non-negligible meaning that reader authentication is disproved. 
     This means that the assumption at step 1 is false which means Theorem 1 is correct: there is no RFID system in Vaudenay's model that achieves both reader authentication and narrow-forward privacy 
     under temporary state disclosure.
 
-    Below is shown how the narrow-forward adversary interacts with the tag to thwart reader authentication. This is an attack on privacy.
+    Below is shown how the narrow-forward adversary interacts with the tag to thwart reader authentication. This is an attack on security.
 
     \begin{figure}[H]
 
@@ -189,7 +189,6 @@
     \textit{Step 3.} The construction of $\mathcal{A}_{sec}^{\mathcal{B}}$ is shown in Algorithm 3 and the win condition for $\mathcal{A}_{sec}^{\mathcal{B}}$
     is established (Eq. 2 to be non-negligible).
 
-    The construction for a blinded adversary against reader authentication is:
     \begin{algorithm}[H] % -> H to fix in place
         \centering
         \caption{Adversary $\mathcal{A}_{sec}^{\mathcal{B}}$ against reader authentication}
@@ -225,7 +224,7 @@
 
     Notation is: 
 
-    $S_0^{\mathcal{T}_{ID}}$ denotes the initial(0) state S of tag $\mathcal{T}_{ID}$;
+    $S_0^{\mathcal{T}_{ID}}$ denotes the initial (0) state S of tag $\mathcal{T}_{ID}$;
 
     $q_t$ denotes the (expected) number of SendTag queries specified by the Ident protocol;
 
@@ -276,13 +275,13 @@
     assumption gives $p_t$ non-negligible and $q_t$ is polynomially bounded. It results in a non-negligible 
     advantage which contradicts narrow-strong privacy.
 
-    The contradiction means that the assuption was incorrect and $\mathcal{A}_{sec}^{\mathcal{B}}$ has non-negligible odds to win the security game.
+    The contradiction means that the assumption was incorrect and $\mathcal{A}_{sec}^{\mathcal{B}}$ has non-negligible odds to win the security game.
 
     \textit{Step 5.} This adversary yields $Pr[Exp_{\mathcal{A}_{sec}^{B}}^{\mathcal{R}-aut} = 1]$ non-negligible meaning that reader authentication is disproved. 
     This means that the assumption at step 1 is false which means Theorem 2 is correct. 
 
     Below is shown how the narrow-strong adversary interacts with the tag to
-    thwart reader authentication. This is an attack on privacy.
+    thwart reader authentication. This is an attack on security.
 
     \begin{figure}[H]
         
@@ -315,7 +314,7 @@
     been motivated in particular by the use of smart cards since in specific cases they go to their initial state when disconnected from power. Subsequently
     they compute with the same randomness they already used before. Reset attacks are always possible when the adversary controls the environment.
 
-    In a similar fashion as before, the reset capabilities are studied for the case of total state reset ( permanent and temporary memory ) and for the case in which
+    In a similar fashion as before, the reset capabilities are studied for the case of total state reset (permanent and temporary memory) and for the case in which
     the reset affects only the persistent state.
 
     To cover the case of reset attacks, a new oracle is introduced: Reset(vtag) to Vaudenay's model. This oracle allows the adversary to reset the state of the vtag

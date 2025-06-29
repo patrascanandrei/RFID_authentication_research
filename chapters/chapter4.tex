@@ -2,9 +2,9 @@
 \definecolor{mygray}{gray}{0.75}
 \definecolor{softred}{RGB}{255, 162, 162}
 
-\section{A tag memory usage}
+\section{A tag's memory usage}
 
-    For the authentication proposed in \cite{BOM}, the tag stores in it's permanent memory the values: \textit{$A, B, p, S, Z_{DBLTKM}, Z_{SUEO}, Z_{AM}$}.
+    For the authentication proposed in \cite{BOM}, the tag stores in its permanent memory the values: \textit{$A, B, p, S, Z_{DBLTKM}, Z_{SUEO}, Z_{AM}$}.
     The global temporary memory will hold the value $N_t$
     used to authenticate the reader. It is generated at step 2 and held until step 10.
 
@@ -284,10 +284,10 @@
         Protocol & Claimed \\
         \hline
         Mutual authentication & Yes \\
-        Location tracking & Yes \\
-        DoS & Yes \\
-        Impersonation attack & Yes  \\
-        Man-in-the-middle attack & Yes  \\
+        Location tracking & \textbf{Yes} \\
+        DoS & \textbf{Yes} \\
+        Impersonation attack & \textbf{Yes}  \\
+        Man-in-the-middle attack & \textbf{Yes}  \\
         Replay attack & Yes  \\
         De-synchronization & Yes  \\
         Forward secrecy & Yes \\

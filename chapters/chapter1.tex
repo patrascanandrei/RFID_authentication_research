@@ -18,21 +18,20 @@
         \item communicates at up to a fixed distance: the tag has a range of a few meters.
     \end{itemize}
     
-    In RFID, Moore's law cannot be directly applied. In fact, the main goal of RFID transponders producers is to keep prices down and so the performance takes
+    In RFID, \textit{Moore's law} cannot be directly applied. In fact, the main goal of RFID transponders producers is to keep prices down and so the performance takes
     a secondary, less important role.
 
-        \textbf{The reader} is composed by one or more transceivers and a backend processing system(sometimes in the literature the reader denotes just the transceiver). 
+        \textbf{The reader} is composed by one or more transceivers and a backend processing system (sometimes in the literature the reader denotes just the transceiver). 
     The reader is able to accommodate multiple tags at the same time although a high number of them can lead to substantial delays for authentication. 
     
         \textbf{The server} is the component that handles the complex cryptographic calculations and eases the load on readers whenever possible. The traditional protocols
     included fixed reader positions and assumed secure (wired) communication. However in practical applications the communication between server and reader is also done via 
-    Radio-Frequency Signals.
+    \textit{Radio-Frequency Signals}.
 
-        RFID protocols are used most often for two goals: to identify tags(by recovering their unique ID) and to authenticate tags(to make sure a tag is legitimate, i.e. registered in 
+        RFID protocols are used most often for two goals: to identify tags (by recovering their unique ID) and to authenticate tags (to make sure a tag is legitimate, i.e. registered in 
     the database). 
 
-        A frequently used and accepted model for security and privacy for RFID schemes is Vaudenay's
-    model, proposed in \cite{Vaudenay}. 
+        A frequently used and accepted model for security and privacy for RFID schemes is \textit{Vaudenay's model}, proposed in \cite{Vaudenay}. 
 
     \textbf{RFID schemes}: A RFID scheme is formed by a triple:
 
@@ -40,19 +39,19 @@
     $K_S$ for the reader depending on the security parameter $\lambda$. The public key is released
     to the public and the secret key is stored on the reader database.
 
-    -a setup scheme for the tag: \textbf{SetupTag(ID) $\rightarrow$ (K, S)}: K is the tag secret and S denotes the 
+    -a setup scheme for the tag: \textbf{SetupTag(ID) $\rightarrow$ (K, S)}: K is the tag's secret and S denotes the 
     initial state of the tag. Furthermore if the tag is legitimate the values ID and K are stored
     on the memory of the reader.
     
-    -an interactive protocol: \textbf{Ident} between the reader and the tag, at the end of communication the reader
+    -an interactive protocol: \textbf{Ident}, between the reader and the tag, at the end of communication the reader
     will output a value ($\bot$, correct ID, incorrect ID) indicating the success of an authentication. For mutual authentication
-    schemes the tag returns $ok$ for a legitimate reader or $\bot$ otherwise. 
+    schemes the tag returns $ok$ for a legitimate reader or $\bot$ (falsum) otherwise. 
     
     Formally: $Ident[\mathcal{T}_{ID}:S; \mathcal{R}: sk_{\mathcal{R}}, DB; *:pk_{\mathcal{R}}] \rightarrow 
     [\mathcal{T}_{ID}:out_{\mathcal{T}_{ID}}; \mathcal{R}:out_{\mathcal{R}}]$. This is interpreted as:
     the identification protocol "Ident" starts with tag $\mathcal{T}_{ID}$ from state $S$, the reader $R$ having the secret key 
     $sk_{\mathcal{R}}$ and the access to database $DB$, and public key $pk_{\mathcal{R}}$ being shared to both parties. After a 
-    succesfull computation it leads to $\mathcal{T}_{ID}$ returning $out_{\mathcal{T}_{ID}}$ and $\mathcal{R}$ yielding $out_{\mathcal{R}}$.
+    successful computation it leads to $\mathcal{T}_{ID}$ returning $out_{\mathcal{T}_{ID}}$ and $\mathcal{R}$ yielding $out_{\mathcal{R}}$.
 
     The \textit{correctness} of a RFID scheme means that after each successful execution of the interactive protocol between the reader and a 
     legitimate tag, the reader outputs the tag's identity with overwhelming probability. For mutual authentication schemes correctness also includes
@@ -60,9 +59,9 @@
 
 \section{Adversaries and oracles}
 
-    \textit{Adversaries:} An adversary is often defined by what action they can perform, i.e. the oracles they can query, 
+    \textit{Adversaries:} An adversary is often characterised by what action they can perform, i.e. the oracles they can query, 
     the goals of their attack (also known as the game they are playing) and by the way they can interact with a system. An adversary
-    is a PPT algorithm.
+    is a PPT (probabilistic polynomial time) algorithm.
     
     A tag can be either \textit{drawn} or \textit{free}, this means that it is in reach or not of the 
     adversary. A virtual tag is a temporary identifier for a tag when it is drawn.
@@ -79,9 +78,9 @@
     and the bits $b_k$ meaning authentic or not. 
     
     A hidden table $\Gamma$ is kept by the oracle containing the association between the temporary identifiers and the real IDs.
-    This will be revealed after an attack experiment to determine if it was successful or not.
+    This will be revealed after an attack experiment to determine if it was successful.
 
-    3. \textit{Free(vtag)}: the vtag is eliminated from the set the attacker works with. This makes it unreachable to the adversary.
+    3. \textit{Free(vtag)}: the vtag is eliminated from the set of drawn tags (that the attacker uses). This makes it unreachable to the adversary.
     
     4. \textit{Launch $\rightarrow \pi$}: the reader launches a new protocol instance $\pi$.
 
@@ -92,15 +91,15 @@
     the message $m'$. If $m$ is empty the response is the first message transmitted by the tag for
     a given protocol. 
 
-    7. \textit{Result($\pi$)}: After the protocol has ended on the reader side, output 1 if the tag was 
+    7. \textit{Result($\pi$)}: After the protocol has ended on the reader side, the oracle outputs 1 if the tag was 
     authenticated and 0 otherwise.
 
     8. \textit{Corrupt(vtag)}: Outputs the current internal state of the tag temporary named vtag. 
 
 \section{Classes of adversaries}
-    Depending on how these oracles are used/the access the attacker has, 4 kinds of adversary are defined:
+    Depending on how these oracles are used/the capabilities of the attacker, four kinds of adversary are defined:
     
-    1. \textit{STRONG}: class of adversary who have access to all the oracles, no limitations on how the Corrupt(vtag) oracle
+    1. \textit{STRONG}: class of adversary who have access to all the oracles, with no limitations on how the Corrupt(vtag) oracle
     is used. Thus a strong adversary can get the state of a tag and still query other oracles for tag $\mathcal{T}$.
 
     2. \textit{DESTRUCTIVE}: adversaries who never use a tag after a Corrupt(vtag) oracle is called,
@@ -111,13 +110,14 @@
 
     4. \textit{WEAK}: adversaries who have no access to the Corrupt(vtag) oracle, the internal memory of the tags remains a secret. 
 
-    Another way to consider adversaries is by their access to the Result($\pi$) oracle. If they have the access, they are considered to be
-    \textit{wide} adversaries, if not, they are called \textit{narrow}. Since the access to the Corrupt() and the Result() oracles
-    is quite orthogonal 4 new distinct adversarial models are distinguished: narrow-strong, narrow-destructive, narrow-forward and narrow-weak.
+    Another way to consider adversaries is by their access to the Result($\pi$) oracle. If they have it, they are considered to be
+    \textit{wide} adversaries, otherwise they are called \textit{narrow}. Since the access to the Corrupt() and the Result() oracles
+    is quite orthogonal, four new distinct adversarial models are distinguished: \textit{narrow-strong}, \textit{narrow-destructive}, 
+    \textit{narrow-forward} and \textit{narrow-weak}.
 
 \section{Security}
 
-    The security definition of the Paise-Vaudenay model \cite{PV model} encompasses attacks where the adversary aims to impersonate or 
+    The security definition of the \textit{Paise-Vaudenay model} \cite{PV model} encompasses attacks where the adversary aims to impersonate or 
     forge a legitimate tag $\mathcal{T}$ or the reader $\mathcal{R}$.
 
     \textit{Tag authentication}: The definition of tag authentication is based on a security experiment $Exp_{\mathcal{A}_{sec}}^{\mathcal{T}-aut}$

@@ -1,18 +1,18 @@
-\chapter{Authentication in RFID protocol}
+\chapter{Authentication in a RFID protocol}
 
 \section{Introduction}
-    The chosen paper\cite{BOM}'s authentication is presented in the following chapter. The Protocol makes use of a diagonal block local transpose key matrix (DBLTKM) 
-    encryption algorithm for it's property of 
-    expanding the key size of the encryption without need of extensive resources. It assures a balance between security and lightness of operations. 
+    The chosen paper's authentication \cite{BOM} is presented in the following chapter. The protocol makes use of a diagonal block local transpose key matrix (DBLTKM) 
+    encryption algorithm for its property of 
+    expanding the key size of the encryption without the need of extensive resources. It assures a balance between security and lightness of operations. 
     Another component is the self updating encryption 
-    order (SUEO) and it's role is to boost security. Lastly a adaptive modulus (AM) algorithm is deployed to weaken the correlation between the 
+    order (SUEO) and its role is to boost security. Lastly a adaptive modulus (AM) algorithm is deployed to weaken the correlation between the 
     plaintext and the ciphertext.
     
     These three algorithms are used to form the block-order-modulus variable matrix encryption algorithm, dubbed the AM-SUEO-DBLTKM algorithm.
 
-\section{Protocol's structure}
+\section{Protocol structure}
 
-    \cite{BOM} proposes 3 corollaries based on block matrix properties and modulo operations that establish the basis for the primitives.
+    Paper \cite{BOM} proposes 3 corollaries based on block matrix properties and modulo operations that establish the basis for the primitives (A, B and C).
 
     A. \textbf{Diagonal block local transpose key matrix (DBLTKM)}
 
@@ -37,7 +37,7 @@
 
     Updating the order of the first matrix along the main diagonal yields multiple key matrices of different sizes thus expanding the key size. For the fact that 
     it uses 2 matrices $A_1$ and $A_2$ as its building blocks the tag does not need to keep multiple separate keys in its memory. In order to expand the potential
-    ways of building the key matrix, the transpose of $A_1$ and  of $A_2$ are also used as building blocks along the main diagonal.
+    ways of building the key matrix, the transpose of $A_1$ and  of $A_2$ are also being used as building blocks along the main diagonal.
 
     B. \textbf{Self updating encryption order (SUEO)}
 
@@ -62,7 +62,7 @@
 
     Thus the change in modulus still yields an inverse and the decryption process can still happen but the correlation between the ciphertext and the plaintext is weakened.
 
-    D. \textbf{DBKM-SUEO-SUM}
+    D. \textbf{AM-SUEO-DBLTKM}
 
     The above three components can be used for an encryption and decryption algorithm. The following figure represents an example with two key matrices and three
     integer divisors of modulus p.
@@ -73,9 +73,9 @@
 
 \section{Specific steps of the authentication protocol}
 
+\subsection*{Notation of the authentication protocol}
 \begin{table}[H]
     \centering
-    \caption{Notation used in the description of the protocol}
     \begin{tabular}{| c | c |}
         \hline
         Notation & Meaning \\
@@ -96,9 +96,10 @@
         $B, B_{new}$ & Initial and updated decryption matrices \\
         \hline
     \end{tabular}
+    \caption{Notation used in the description of the protocol}
 \end{table}
 
-    The notation used in the protocol are shown in table 2.1. The details of it are are follows:
+\subsection*{Protocol details}
 
     1. The reader sends a query to the tag. This activates tags without batteries.
 
@@ -138,8 +139,9 @@
     14. Server calculates mod($S_d, Z_{DBLTKM}$), mod($S_p, Z_{SUEO}$), mod($S_c, Z_{AM}$) itself. It decrypts E($N_r+1||ID$, $A_{new}$, $q$) using the newly calculated $B_{new}$ and q. If the received value $N_r$ 
     matches the saved value $N_r$, the server obtains ID.
     
+\subsection*{Protocol scheme}
+\vspace{-1cm}
 % \newgeometry{left=1cm}
-
 \begin{adjustwidth}{-0pt}{}
 \procedureblock[colspace=-1.5cm]{The two way AM-SUEO-DBLTKM-RFID authentication protocol}{
     \textbf{Server} \< \< \textbf{Reader} \< \< \textbf{Tag} \\[-1ex]
