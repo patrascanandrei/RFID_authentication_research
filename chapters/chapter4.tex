@@ -11,7 +11,7 @@
     \begin{adjustwidth}{-60pt}{}
     \procedureblock[colspace=-0.5cm]{The tag-reader side protocol: Tag memory usage}{
     \textbf{Reader} \< \< \textbf{Tag} \\[-1ex]
-    \textit{\footnotesize $A, B, p, S, N_r$} \< \< \textit{\footnotesize \colorbox{mygray}{$A, B, p, S, N_t$}} \\[-2ex]
+    \textit{\footnotesize $A, B, p, S, N_r$} \< \< \textit{\footnotesize \colorbox{mygray}{$A, B, p, S$} \colorbox{olive}{$N_t$}} \\[-2ex]
     \textit{\footnotesize $Z_{DBLTKM}, Z_{SUEO}, Z_{AM}$} \< \< \textit{\footnotesize \colorbox{mygray}{$Z_{DBLTKM}, Z_{SUEO}, Z_{AM}$}} \\[-1.5ex]
     % \\
     \<\sendmessageright{top=\text{ \scriptsize 1.Query}} \< \\[-4ex]
@@ -47,8 +47,8 @@
     As it was presented in section 3.2, a narrow-forward adversary can interact with a scheme the following way, given the assumption that
     the Corrupt() oracle yields the persistent and the temporary memory is true:
 
-    1. Adversary waits for a legitimate tag to respond to a reader query (step 3 of the protocol): E($N_t||S$,A,p).
-    This can be achieved by also sending a query to the tag, compelling it to compute a nonce and send E($N_t||S$,A,p).
+    1. Adversary waits for a legitimate tag to respond to a reader query (step 3 of the protocol): E($N_t||S$, A, p).
+    This can be achieved by also sending a query to the tag, compelling it to compute a nonce and send E($N_t||S$, A, p).
 
     2. Before the tag receives the message from the reader with an encrypted nonce $N_t$ the adversary corrupts the tag, obtaining
     its internal state. By doing that the adversary now knows $A, B, p, S, Z_{DBLTKM}, Z_{SUEO}, Z_{AM}$ and the nonce $N_t$.
@@ -210,7 +210,7 @@
     From the methods used to construct the block-order-modulus protocol it is clear that the state of tags changes over time. However in order to combat
     the potential loss of privacy due to state disclosure by Corrupt() a stateless scheme might be considered. The steps of the protocol will remaining
     largely the same, only the computations that change the state of the tag are removed. The protocol still achieves mutual authentication between its 
-    three components and the server obtains the identity of the tag by the end of its completion. 
+    three components and the server obtains the identity of the tag by the end of its completion. The nonce $N_t$ is no longer randomly generated.
     
     Section 3.5 presents a blinder/simulator that can simulate the tag and the reader in a first phase and the reader in a second phase and
     is able to distinguish if a tag has changed its state. This blinder was noted by $\mathcal{B}_D$ and is used
@@ -268,7 +268,7 @@
     }
     \end{adjustwidth}
 
-    Normally when the blinder outputs the result it means if the tag is authenticated, however for the block-order-modulus protocol 
+    Normally when the blinder outputs the result it indicates if the tag is authenticated. However for the block-order-modulus protocol 
     the tag is authenticated at step 4. In this particular case $\mathcal{B}_D$ outputs if it is able to decrypt the message sent at step 11.
     
     The adversary studies the distribution by which the end result is produced and can infer from it if it was the same tag used for the first
@@ -278,7 +278,6 @@
 \section{Scheme security}
 \begin{table}[H]
     \centering
-    \caption{The security properties claimed by \cite{BOM}}
     \begin{tabular}{| c | c |}
         \hline
         Protocol & Claimed \\
@@ -293,6 +292,7 @@
         Forward secrecy & Yes \\
         \hline
     \end{tabular}
+    \caption{The security properties claimed by \cite{BOM}}
 \end{table}
 
     However many of the security claims do not hold in the context of tag corruption. An important note is that an adversary can corrupt
@@ -304,7 +304,7 @@
     \textbf{impersonation attacks}.
     
     In the case of \textbf{location tracking} an adversary can corrupt a tag and infer relations or straight out obtain secret value $S$, meaning
-    they can link it with a particular location. Strong adversaries can corrupt the tags and release them back. By sending a query(step 1
+    they can link it with a particular location. Strong adversaries can corrupt the tags and release them back. By sending a query (step 1
     of the protocol) and breaking reader authentication the adversary can further track the tag in case it was moved.
 
     A \textbf{DoS attack} consists in sending large amounts of data to a system in order to cause it to malfunction. The original protocol
@@ -332,7 +332,6 @@
 
     \begin{table}[H]
     \centering
-    \caption{BAN logic notations}
     \begin{tabular}{| c | c |}
         \hline
         Notations & Meaning \\
@@ -346,6 +345,7 @@
         $ P \sharesecret{k} Q $ & P and Q have a shared secret k \\
         \hline
     \end{tabular}
+    \caption{BAN logic notations}
     \end{table}
 
     Some BAN logic rules are formed, one of them being R1 (Message-meaning rule): 
@@ -376,12 +376,11 @@
 
 \section{Achievable classes of privacy}
 
-    Clearly access to the Corrupt oracle has major consequences on RFID schemes. Following the impossibility results from section 3, 
+    Clearly access to the Corrupt() oracle has major consequences on RFID schemes. Following the impossibility results from section 3, 
     depending on the tags used, these classes of privacy can be achieved:
 
     \begin{table}[H]
     \centering
-    \caption{The security properties achievable for various tags}
     \begin{tabular}{| c | c |}
         \hline
         Class of tag & achievable privacy \\
@@ -392,39 +391,40 @@
         Stateless & narrow-destructive \& forward privacy \\
         \hline
     \end{tabular}
+    \caption{The security properties achievable for various tags}
     \end{table}
 
     These results lead to an extended discussion about security for a given RFID scheme. The \cite{BOM} scheme achieves (mutual)
     authentication between tags and reader and between reader and server. For the former, the reader authenticates the tag by
     receiving the secret value $S$ and querying it into its internal database to check its legitimacy. Reader authentication is
     achieved by decrypting the message at step 9 and receiving back value $N_t$. Only the reader should be able to decrypt 
-    E($N_t||S$,A,p) (step 3) and obtain $N_t$ and be able to send it back, thus proving authenticity.
+    E($N_t||S$, A, p) (step 3) and obtain $N_t$ and be able to send it back, thus proving authenticity.
     
     \begin{adjustwidth}{-40pt}{}
     \procedureblock[colspace=-0.5cm]{The tag-reader side protocol: mutual authentication}{
     \textbf{Reader} \< \< \textbf{Tag} \\[-1ex]
-    \textit{\footnotesize $A, B, p, S, N_r$} \< \< \textit{\footnotesize $A, B, p, $\colorbox{olive}{$S$}$, N_t$} \\[-2ex]
+    \textit{\footnotesize $A, B, p, S, N_r$} \< \< \textit{\footnotesize $A, B, p$, \colorbox{mygray}{$S$}, \colorbox{olive}{$N_t$}} \\[-2ex]
     \textit{\footnotesize $Z_{DBLTKM}, Z_{SUEO}, Z_{AM}$} \< \< \textit{\footnotesize $Z_{DBLTKM}, Z_{SUEO}, Z_{AM}$} \\[-1.5ex]
     % \\
     \<\sendmessageright{top=\text{ \scriptsize 1.Query}} \< \\[-4ex]
     % \\
-    \< \< \text{ \scriptsize 2.Generates \colorbox{mygray}{$N_t$}} \\[-1ex]
+    \< \< \text{ \scriptsize 2.Generates \colorbox{olive}{$N_t$}} \\[-1ex]
     \< \< \text{ \scriptsize E($N_t||S$, A, p)} \\[-4ex]
     % \\
     \< \sendmessageleft{top=\text{ \scriptsize 3.E($N_t||S$, A, p)}} \< \\[-4ex]
     % \\
-    \text{ \scriptsize 4.D(E(\colorbox{mygray}{$N_t$}$||$\colorbox{olive}{$S$}, A, p), B, p)} \< \< \\[-1ex]
+    \text{ \scriptsize 4.D(E(\colorbox{olive}{$N_t$}$||$\colorbox{mygray}{$S$}, A, p), B, p)} \< \< \\[-1ex]
     \text{ \scriptsize Generates $N_r$} \< \< \\[-1ex]
     \text{ \scriptsize E($N_r||S$, A, p)} \< \< \\[-1ex]
     % \\
     \text{ \scriptsize ...} \< \< \\[-1ex]
     % \\
     \text{ \scriptsize 8.D(E($N_r||S_d||S_p||S_c$, A, p), B, p)} \< \< \\[-1ex]
-    \text{ \scriptsize E(\colorbox{mygray}{$N_t$}$||S_d||S_p||S_c$, A, p)} \< \< \\[-4ex]
+    \text{ \scriptsize E(\colorbox{olive}{$N_t$}$||S_d||S_p||S_c$, A, p)} \< \< \\[-4ex]
     % \\
     \<\sendmessageright{top = \text{ \scriptsize 9.E($N_t||S_d||S_p||S_c$, A, p)}}\<\\[-4ex]
     % \\
-    \< \< \text{ \scriptsize 10.D(E(\colorbox{mygray}{$N_t$}$||S_d||S_p||S_c$, A, p), B, p)} \\[-1ex]
+    \< \< \text{ \scriptsize 10.D(E(\colorbox{olive}{$N_t$}$||S_d||S_p||S_c$, A, p), B, p)} \\[-1ex]
     \< \< \text{ \scriptsize Calculates mod($S_d, Z_{DBLTKM}$)} \\[-1ex]
     \< \< \text{ \scriptsize Calculates mod($S_p, Z_{SUEO}$)} \\[-1ex]
     \< \< \text{ \scriptsize Calculates mod($S_c, Z_{AM}$)} \\[-1ex]
@@ -439,8 +439,8 @@
     \textbf{Theorem 1}: \textit{There is no RFID system in Vaudenay's model that achieves both reader authentication and narrow-forward privacy 
     under temporary state disclosure.}
 
-    This means that for the scheme presented the achievable privacy is weak or narrow-weak for the case in which the adversary has no
-    access to the Result oracle. This result is based on the presumption that temporary state disclosure includes the temporary
+    This means that for the scheme presented the achievable privacy is weak or \\ narrow-weak for the case in which the adversary has no
+    access to the Result() oracle. This result is based on the presumption that temporary state disclosure includes the temporary
     memory of the tag and additionally the persistent state.
 
     For the case of disclosure of only the permanent state of the tag the impossibility results of theorem 2 state:
@@ -448,7 +448,7 @@
     \textbf{Theorem 2}: \textit{There is no RFID system in Vaudenay's model that achieves both reader authentication and narrow-strong privacy 
     under permanent state disclosure.}
 
-    Thus under the presumption that the Corrupt oracle yields only the permanent state, the scheme can achieve at most destructive or
+    Thus under the presumption that the Corrupt() oracle yields only the permanent state, the scheme can achieve at most destructive or
     narrow-destructive privacy.
 
     Resettable tags and the ability of the adversary to change the state to its initial values lead to the impossibility of narrow-weak

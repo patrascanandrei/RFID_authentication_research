@@ -589,12 +589,12 @@
         \end{algorithmic}
     \end{algorithm}
 
-    The adversary makes $\mathcal{B}_D$ to compute the first $j_{\mathcal{R}}$ rounds of the protocol(8-12). After, $\mathcal{A}_{prv}^{\mathcal{B}_D}$ queries the 
+    The adversary makes $\mathcal{B}_D$ to compute the first $j_{\mathcal{R}}$ rounds of the protocol (8-12). After, $\mathcal{A}_{prv}^{\mathcal{B}_D}$ queries the 
     SendTag() oracle with message $m_{2j_{\mathcal{R}}-1}$ given by $\mathcal{B}_D$. This is the tag side of the protocol for step $j_{\mathcal{R}}$. Next the adversary
     frees $vtag_{0}$ and draws a new tag: $vtag_{1}$. Steps 13-15 are not shown to $\mathcal{B}_D$. Next $\mathcal{A}_{prv}^{\mathcal{B}_D}$ obtains the state of
     the new tag $vtag_{1}$ by corrupting it. This is shown to $\mathcal{B}_D$. $\mathcal{A}_{prv}^{\mathcal{B}_D}$ sends $\mathcal{B}_D$ the message $m_{2j_{\mathcal{R}}}$ 
     (line 13). This message has been computed either with the real oracles or via blinder $\mathcal{B}$. $\mathcal{B}_D$ expects this message to be the product of the Corrupt()
-    oracle(line 12, algorithm 7).
+    oracle (line 12, algorithm 7).
 
     Until now the algorithm has computed $j_{\mathcal{R}}$ steps with a tag and 2 options discerned themselves, to continue with the original tag or choose another. The selected 
     tag will be subjected to the evaluation done by $\mathcal{B}_D$. 
